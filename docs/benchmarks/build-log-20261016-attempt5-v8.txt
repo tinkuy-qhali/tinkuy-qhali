@@ -1,0 +1,572 @@
+--progress is a global compose flag, better use `docker compose --progress xx build ...
+ Image tinkuy-qhali:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 571B 0.1s done
+#1 DONE 0.1s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 5.45kB 0.0s done
+#2 DONE 0.0s
+
+#3 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+#3 DONE 1.2s
+
+#4 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+#4 resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e 0.1s done
+#4 CACHED
+
+#5 [internal] load metadata for ghcr.io/astral-sh/uv:0.13.1
+#5 ...
+
+#6 [internal] load metadata for docker.io/rocker/r-ver:4.6.0
+#6 DONE 0.8s
+
+#5 [internal] load metadata for ghcr.io/astral-sh/uv:0.13.1
+#5 DONE 2.3s
+
+#7 [internal] load .dockerignore
+#7 transferring context: 2B done
+#7 DONE 0.0s
+
+#8 FROM ghcr.io/astral-sh/uv:0.13.1@sha256:4a1f3666816dafadd20ceb71eac9a7d56d7ef30279f7d64048519ab901ada336
+#8 resolve ghcr.io/astral-sh/uv:0.13.1@sha256:4a1f3666816dafadd20ceb71eac9a7d56d7ef30279f7d64048519ab901ada336 0.1s done
+#8 DONE 0.1s
+
+#9 [base  1/18] FROM docker.io/rocker/r-ver:4.6.0@sha256:6f05a1a8b8c52328f181593923909b01cbfd14c9caea93bf75ddc65e806d8eac
+#9 resolve docker.io/rocker/r-ver:4.6.0@sha256:6f05a1a8b8c52328f181593923909b01cbfd14c9caea93bf75ddc65e806d8eac 0.1s done
+#9 DONE 0.1s
+
+#10 [internal] load build context
+#10 transferring context: 2.80kB 0.0s done
+#10 DONE 0.0s
+
+#11 [base  2/18] RUN apt-get update && apt-get install -y --no-install-recommends       ca-certificates curl wget git git-lfs unzip zip zstd jq make pkg-config less nano       locales tzdata gnupg openssh-client util-linux       libgdal-dev libgeos-dev libproj-dev libudunits2-dev libsqlite3-dev       libcurl4-openssl-dev libssl-dev libxml2-dev libgit2-dev       libfontconfig1-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev       libpng-dev libtiff-dev libjpeg-dev libcairo2-dev libglpk-dev     && sed -i 's/^# *en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen && locale-gen     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [base  3/18] RUN if [ ! -f /rocker_scripts/install_quarto.sh ]; then mkdir -p /rocker_scripts       && curl -fsSL -o /rocker_scripts/install_quarto.sh https://raw.githubusercontent.com/rocker-org/rocker-versioned2/master/scripts/install_quarto.sh       && chmod +x /rocker_scripts/install_quarto.sh; fi     && QUARTO_VERSION=1.10.19 /rocker_scripts/install_quarto.sh     && quarto --version
+#12 CACHED
+
+#13 [base  4/18] COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /uvx /usr/local/bin/
+#13 CACHED
+
+#14 [base  8/18] RUN if [ "1" = "1" ]; then       curl -fsSL https://install.julialang.org | sh -s -- --yes --default-channel 1.13.2         --path /opt/juliaup --add-to-path no --background-selfupdate 0 --startup-selfupdate 0       && julia --version ;     fi
+#14 CACHED
+
+#15 [base  5/18] RUN uv python install 3.13     && uv tool install --python 3.13 "dvc[s3]==3.67.1"     && dvc --version
+#15 CACHED
+
+#16 [base  6/18] COPY env/python/ /opt/env/python/
+#16 CACHED
+
+#17 [base  7/18] RUN cd /opt/env/python     && if [ ! -f uv.lock ]; then uv lock; fi     && uv sync --frozen --no-dev     && cp uv.lock /opt/env/python/uv.lock.generated
+#17 CACHED
+
+#18 [base  9/18] COPY env/julia/ /opt/env/julia/
+#18 CACHED
+
+#19 [base 10/18] RUN if [ "1" = "1" ]; then       julia /opt/env/julia/setup.jl       && chmod -R a+rX /opt/julia-depot /opt/juliaup ;     fi
+#19 CACHED
+
+#20 [base 11/18] RUN apt-get update && apt-get install -y --no-install-recommends libuv1 && rm -rf /var/lib/apt/lists/*
+#20 1.399 Get:1 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+#20 2.466 Get:2 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+#20 2.730 Get:3 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+#20 2.808 Get:4 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+#20 2.997 Get:5 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1,808 kB]
+#20 3.663 Get:6 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+#20 3.778 Get:7 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1,549 kB]
+#20 5.175 Get:8 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [55.6 kB]
+#20 5.182 Get:9 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1,409 kB]
+#20 5.399 Get:10 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [2,122 kB]
+#20 5.577 Get:11 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+#20 5.603 Get:12 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+#20 5.611 Get:13 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1,729 kB]
+#20 5.815 Get:14 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2,168 kB]
+#20 6.092 Get:15 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [2,231 kB]
+#20 6.386 Get:16 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [61.7 kB]
+#20 6.394 Get:17 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [669 B]
+#20 6.394 Get:18 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [36.0 kB]
+#20 6.397 Get:19 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.0 kB]
+#20 7.369 Fetched 33.6 MB in 7s (4,869 kB/s)
+#20 7.369 Reading package lists...
+#20 8.627 Reading package lists...
+#20 9.882 Building dependency tree...
+#20 10.11 Reading state information...
+#20 10.51 The following NEW packages will be installed:
+#20 10.51   libuv1t64
+#20 10.96 0 upgraded, 1 newly installed, 0 to remove and 35 not upgraded.
+#20 10.96 Need to get 97.3 kB of archives.
+#20 10.96 After this operation, 270 kB of additional disk space will be used.
+#20 10.96 Get:1 http://archive.ubuntu.com/ubuntu noble/main amd64 libuv1t64 amd64 1.48.0-1.1build1 [97.3 kB]
+#20 11.98 debconf: delaying package configuration, since apt-utils is not installed
+#20 12.04 Fetched 97.3 kB in 1s (95.0 kB/s)
+#20 12.18 Selecting previously unselected package libuv1t64:amd64.
+#20 12.18 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 43526 files and directories currently installed.)
+#20 12.42 Preparing to unpack .../libuv1t64_1.48.0-1.1build1_amd64.deb ...
+#20 12.44 Unpacking libuv1t64:amd64 (1.48.0-1.1build1) ...
+#20 12.54 Setting up libuv1t64:amd64 (1.48.0-1.1build1) ...
+#20 12.57 Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+#20 DONE 12.7s
+
+#21 [base 12/18] COPY env/r/ /opt/env/r/
+#21 DONE 0.1s
+
+#22 [base 13/18] RUN Rscript /opt/env/r/install_packages.R     && Rscript -e 'library(arrow); library(duckdb); library(sf); library(targets); cat("R stack ok\n")'
+#22 2.435 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-06-23/src/contrib/renv_1.2.3.tar.gz'
+#22 3.828 Content type 'binary/octet-stream' length 2541851 bytes (2.4 MB)
+#22 3.828 ==================================================
+#22 4.086 downloaded 2.4 MB
+#22 4.086 
+#22 4.784 * installing *binary* package ‘renv’ ...
+#22 4.824 * package ‘renv’ successfully unpacked and SHA256 sums checked
+#22 4.828 * DONE (renv)
+#22 4.843 
+#22 4.843 The downloaded source packages are in
+#22 4.843 	‘/tmp/Rtmp1Agung/downloaded_packages’
+#22 4.844 >> restoring from /opt/env/r/renv.lock
+#22 5.417 The following required system packages are not installed:
+#22 5.417 - cmake        [required by arrow, fs, nanonext]
+#22 5.417 - gdal-bin     [required by sf, terra]
+#22 5.417 - libabsl-dev  [required by s2]
+#22 5.417 - libnode-dev  [required by V8]
+#22 5.417 - pandoc       [required by blastula, knitr, rmarkdown]
+#22 5.417 - xz-utils     [required by duckdb]
+#22 5.417 The R packages depending on these system packages may fail to install.
+#22 5.417 
+#22 5.421 An administrator can install these packages with:
+#22 5.421 - sudo apt install cmake gdal-bin libabsl-dev libnode-dev pandoc xz-utils
+#22 5.421 
+#22 6.363 The following package(s) will be updated:
+#22 6.363 
+#22 6.363 # RSPM -----------------------------------------------------------------------
+#22 6.363 - arrow           [* -> 24.0.0]
+#22 6.363 - askpass         [* -> 1.2.1]
+#22 6.363 - assertthat      [* -> 0.2.1]
+#22 6.363 - backports       [* -> 1.5.1]
+#22 6.363 - base64enc       [* -> 0.1-6]
+#22 6.363 - base64url       [* -> 1.4]
+#22 6.363 - bench           [* -> 1.1.4]
+#22 6.363 - bigD            [* -> 0.3.1]
+#22 6.363 - bit             [* -> 4.6.0]
+#22 6.363 - bit64           [* -> 4.8.2]
+#22 6.363 - bitops          [* -> 1.0-9]
+#22 6.363 - blastula        [* -> 0.3.6]
+#22 6.363 - blob            [* -> 1.3.0]
+#22 6.363 - brew            [* -> 1.0-10]
+#22 6.363 - brio            [* -> 1.1.5]
+#22 6.363 - bslib           [* -> 0.11.0]
+#22 6.363 - cachem          [* -> 1.1.0]
+#22 6.363 - callr           [* -> 3.8.0]
+#22 6.363 - classInt        [* -> 0.4-11]
+#22 6.363 - cli             [* -> 3.6.6]
+#22 6.363 - clipr           [* -> 0.8.1]
+#22 6.363 - collections     [* -> 0.3.12]
+#22 6.363 - commonmark      [* -> 2.0.0]
+#22 6.363 - cpp11           [* -> 0.5.5]
+#22 6.363 - crayon          [* -> 1.5.3]
+#22 6.363 - crew            [* -> 1.3.1]
+#22 6.363 - curl            [* -> 7.1.0]
+#22 6.363 - data.table      [* -> 1.18.4]
+#22 6.363 - DBI             [* -> 1.3.0]
+#22 6.363 - dbplyr          [* -> 2.6.0]
+#22 6.363 - desc            [* -> 1.4.3]
+#22 6.363 - diffobj         [* -> 0.3.6]
+#22 6.363 - digest          [* -> 0.6.39]
+#22 6.363 - dplyr           [* -> 1.2.1]
+#22 6.363 - duckdb          [* -> 1.5.4]
+#22 6.363 - e1071           [* -> 1.7-17]
+#22 6.363 - evaluate        [* -> 1.0.5]
+#22 6.363 - farver          [* -> 2.1.2]
+#22 6.363 - fastmap         [* -> 1.2.0]
+#22 6.363 - fontawesome     [* -> 0.5.3]
+#22 6.363 - forcats         [* -> 1.0.1]
+#22 6.363 - fs              [* -> 2.1.0]
+#22 6.363 - generics        [* -> 0.1.4]
+#22 6.363 - getPass         [* -> 0.2-4]
+#22 6.363 - ggplot2         [* -> 4.0.3]
+#22 6.363 - glue            [* -> 1.8.1]
+#22 6.363 - gt              [* -> 1.3.0]
+#22 6.363 - gtable          [* -> 0.3.6]
+#22 6.363 - haven           [* -> 2.5.5]
+#22 6.363 - here            [* -> 1.0.2]
+#22 6.363 - highr           [* -> 0.12]
+#22 6.363 - hms             [* -> 1.1.4]
+#22 6.363 - htmltools       [* -> 0.5.9]
+#22 6.363 - htmlwidgets     [* -> 1.6.4]
+#22 6.363 - httr            [* -> 1.4.8]
+#22 6.363 - igraph          [* -> 2.3.2]
+#22 6.363 - isoband         [* -> 0.3.0]
+#22 6.363 - jquerylib       [* -> 0.1.4]
+#22 6.363 - jsonlite        [* -> 2.0.0]
+#22 6.363 - juicyjuice      [* -> 0.1.0]
+#22 6.363 - JuliaCall       [* -> 0.17.6]
+#22 6.363 - knitr           [* -> 1.51]
+#22 6.363 - labeling        [* -> 0.4.3]
+#22 6.363 - labelled        [* -> 2.16.0]
+#22 6.363 - later           [* -> 1.4.8]
+#22 6.363 - lifecycle       [* -> 1.0.5]
+#22 6.363 - lintr           [* -> 3.3.0-1]
+#22 6.363 - litedown        [* -> 0.9]
+#22 6.363 - magrittr        [* -> 2.0.5]
+#22 6.363 - markdown        [* -> 2.0]
+#22 6.363 - memoise         [* -> 2.0.1]
+#22 6.363 - mime            [* -> 0.13]
+#22 6.363 - minqa           [* -> 1.2.8]
+#22 6.363 - mirai           [* -> 2.7.1]
+#22 6.363 - mitools         [* -> 2.4]
+#22 6.363 - nanonext        [* -> 1.9.1]
+#22 6.363 - numDeriv        [* -> 2016.8-1.1]
+#22 6.363 - openssl         [* -> 2.4.2]
+#22 6.363 - otel            [* -> 0.2.0]
+#22 6.363 - pillar          [* -> 1.11.1]
+#22 6.363 - pkgbuild        [* -> 1.4.8]
+#22 6.363 - pkgconfig       [* -> 2.0.3]
+#22 6.363 - pkgload         [* -> 1.5.3]
+#22 6.363 - png             [* -> 0.1-9]
+#22 6.363 - pointblank      [* -> 0.12.3]
+#22 6.363 - praise          [* -> 1.0.0]
+#22 6.363 - prettyunits     [* -> 1.2.0]
+#22 6.363 - processx        [* -> 3.9.0]
+#22 6.363 - profmem         [* -> 0.7.0]
+#22 6.363 - progress        [* -> 1.2.3]
+#22 6.363 - promises        [* -> 1.5.0]
+#22 6.363 - proxy           [* -> 0.4-29]
+#22 6.363 - ps              [* -> 1.9.3]
+#22 6.363 - purrr           [* -> 1.2.2]
+#22 6.363 - quarto          [* -> 1.5.1]
+#22 6.363 - R.cache         [* -> 0.17.0]
+#22 6.363 - R.methodsS3     [* -> 1.8.2]
+#22 6.363 - R.oo            [* -> 1.27.1]
+#22 6.363 - R.utils         [* -> 2.13.0]
+#22 6.363 - R6              [* -> 2.6.1]
+#22 6.363 - rappdirs        [* -> 0.3.4]
+#22 6.363 - RColorBrewer    [* -> 1.1-3]
+#22 6.363 - Rcpp            [* -> 1.1.1-1.1]
+#22 6.363 - RcppArmadillo   [* -> 15.4.0-1]
+#22 6.363 - RcppTOML        [* -> 0.2.3]
+#22 6.363 - reactable       [* -> 0.4.5]
+#22 6.363 - reactR          [* -> 0.6.1]
+#22 6.363 - readr           [* -> 2.2.0]
+#22 6.363 - reticulate      [* -> 1.46.0]
+#22 6.363 - rex             [* -> 1.2.2]
+#22 6.363 - rjson           [* -> 0.2.23]
+#22 6.363 - rlang           [* -> 1.2.0]
+#22 6.363 - rmarkdown       [* -> 2.31]
+#22 6.363 - roxygen2        [* -> 8.0.0]
+#22 6.363 - rprojroot       [* -> 2.1.1]
+#22 6.363 - rstudioapi      [* -> 0.19.0]
+#22 6.363 - s2              [* -> 1.1.11]
+#22 6.363 - S7              [* -> 0.2.2]
+#22 6.363 - sass            [* -> 0.4.10]
+#22 6.363 - scales          [* -> 1.4.0]
+#22 6.363 - secretbase      [* -> 1.3.0]
+#22 6.363 - sf              [* -> 1.1-1]
+#22 6.363 - srvyr           [* -> 1.3.1]
+#22 6.363 - stringi         [* -> 1.8.7]
+#22 6.363 - stringr         [* -> 1.6.0]
+#22 6.363 - styler          [* -> 1.11.0]
+#22 6.363 - survey          [* -> 4.5]
+#22 6.363 - sys             [* -> 3.4.3]
+#22 6.363 - tarchetypes     [* -> 0.14.1]
+#22 6.363 - targets         [* -> 1.12.0]
+#22 6.363 - terra           [* -> 1.9-34]
+#22 6.363 - testthat        [* -> 3.3.2]
+#22 6.363 - tibble          [* -> 3.3.1]
+#22 6.363 - tidyr           [* -> 1.3.2]
+#22 6.363 - tidyselect      [* -> 1.2.1]
+#22 6.363 - tinytex         [* -> 0.60]
+#22 6.363 - tzdb            [* -> 0.5.0]
+#22 6.363 - units           [* -> 1.0-1]
+#22 6.363 - utf8            [* -> 1.2.6]
+#22 6.363 - uuid            [* -> 1.2-2]
+#22 6.363 - V8              [* -> 8.2.0]
+#22 6.363 - vctrs           [* -> 0.7.3]
+#22 6.363 - viridisLite     [* -> 0.4.3]
+#22 6.363 - vroom           [* -> 1.7.1]
+#22 6.363 - waldo           [* -> 0.6.2]
+#22 6.363 - withr           [* -> 3.0.3]
+#22 6.363 - wk              [* -> 0.9.5]
+#22 6.363 - xfun            [* -> 0.59]
+#22 6.363 - xml2            [* -> 1.6.0]
+#22 6.363 - xmlparsedata    [* -> 1.0.5]
+#22 6.363 - yaml            [* -> 2.3.12]
+#22 6.363 
+#22 7.083 - Querying repositories for available source packages ... Done!
+#22 12.18 # Downloading packages -------------------------------------------------------
+#22 12.62 [?25l  (0/151) Downloading: RColorBrewer, wk, sys, RcppArmadillo, ...                                                                                                [32m✔[0m sys 3.4.3                                [42 kB in 1.4s]
+#22 14.33   (1/151) Downloading: RColorBrewer, wk, RcppArmadillo, rstudioapi, ...                                                                                         [32m✔[0m RColorBrewer 1.1-3                       [53 kB in 1.4s]
+#22 14.33   (2/151) Downloading: wk, RcppArmadillo, rstudioapi, jsonlite, ...                                                                                             [32m✔[0m memoise 2.0.1                            [53 kB in 1.4s]
+#22 14.34   (3/151) Downloading: wk, RcppArmadillo, rstudioapi, jsonlite, ...                                                                                             [32m✔[0m rstudioapi 0.19.0                        [360 kB in 1.5s]
+#22 14.37   (4/151) Downloading: wk, RcppArmadillo, jsonlite, magrittr, ...                                                                                               [32m✔[0m magrittr 2.0.5                           [226 kB in 1.5s]
+#22 14.39   (5/151) Downloading: wk, RcppArmadillo, jsonlite, farver, ...                                                                                                 [32m✔[0m base64enc 0.1-6                          [30 kB in 1.5s]
+#22 14.45   (6/151) Downloading: wk, RcppArmadillo, jsonlite, farver, ...                                                                                                 [32m✔[0m fs 2.1.0                                 [247 kB in 1.6s]
+#22 14.55   (7/151) Downloading: wk, RcppArmadillo, jsonlite, farver, ...                                                                                                 [32m✔[0m jsonlite 2.0.0                           [1.1 MB in 1.7s]
+#22 14.56   (8/151) Downloading: wk, RcppArmadillo, farver, rmarkdown, ...                                                                                                [32m✔[0m vctrs 0.7.3                              [1.9 MB in 1.7s]
+#22 14.57   (9/151) Downloading: wk, RcppArmadillo, farver, rmarkdown, ...                                                                                                [32m✔[0m forcats 1.0.1                            [428 kB in 0.34s]
+#22 14.67   (10/151) Downloading: wk, RcppArmadillo, farver, rmarkdown, ...                                                                                               [32m✔[0m progress 1.2.3                           [92 kB in 0.33s]
+#22 14.69   (11/151) Downloading: wk, RcppArmadillo, farver, rmarkdown, ...                                                                                               [32m✔[0m askpass 1.2.1                            [24 kB in 1.8s]
+#22 14.73   (12/151) Downloading: wk, RcppArmadillo, farver, rmarkdown, ...                                                                                               [32m✔[0m farver 2.1.2                             [1.5 MB in 1.8s]
+#22 14.75   (13/151) Downloading: wk, RcppArmadillo, rmarkdown, minqa, ...                                                                                                [32m✔[0m minqa 1.2.8                              [126 kB in 2.1s]
+#22 14.98   (14/151) Downloading: wk, RcppArmadillo, rmarkdown, terra, ...                                                                                                [32m✔[0m cpp11 0.5.5                              [309 kB in 0.45s]
+#22 15.00   (15/151) Downloading: wk, RcppArmadillo, rmarkdown, terra, ...                                                                                                [32m✔[0m rmarkdown 2.31                           [2.7 MB in 2.1s]
+#22 15.03   (16/151) Downloading: wk, RcppArmadillo, terra, tinytex, ...                                                                                                  [32m✔[0m sass 0.4.10                              [2.5 MB in 0.37s]
+#22 15.04   (17/151) Downloading: wk, RcppArmadillo, terra, tinytex, ...                                                                                                  [32m✔[0m curl 7.1.0                               [777 kB in 0.7s]
+#22 15.09   (18/151) Downloading: wk, RcppArmadillo, terra, tinytex, ...                                                                                                  [32m✔[0m htmlwidgets 1.6.4                        [818 kB in 0.41s]
+#22 15.14   (19/151) Downloading: wk, RcppArmadillo, terra, tinytex, ...                                                                                                  [32m✔[0m quarto 1.5.1                             [549 kB in 0.39s]
+#22 15.14   (20/151) Downloading: wk, RcppArmadillo, terra, tinytex, ...                                                                                                  [32m✔[0m cachem 1.1.0                             [76 kB in 0.17s]
+#22 15.21   (21/151) Downloading: wk, RcppArmadillo, terra, tinytex, ...                                                                                                  [32m✔[0m RcppArmadillo 15.4.0-1                   [1.1 MB in 2.4s]
+#22 15.36   (22/151) Downloading: wk, terra, tinytex, htmltools, ...                                                                                                      [32m✔[0m uuid 1.2-2                               [51 kB in 0.25s]
+#22 15.39   (23/151) Downloading: wk, terra, tinytex, htmltools, ...                                                                                                      [32m✔[0m commonmark 2.0.0                         [150 kB in 0.3s]
+#22 15.44   (24/151) Downloading: wk, terra, tinytex, htmltools, ...                                                                                                      [32m✔[0m wk 0.9.5                                 [1.7 MB in 2.6s]
+#22 15.49   (25/151) Downloading: terra, tinytex, htmltools, haven, ...                                                                                                   [32m✔[0m fontawesome 0.5.3                        [1.4 MB in 0.55s]
+#22 15.55   (26/151) Downloading: terra, tinytex, htmltools, haven, ...                                                                                                   [32m✔[0m htmltools 0.5.9                          [357 kB in 1.5s]
+#22 15.84   (27/151) Downloading: terra, tinytex, haven, survey, ...                                                                                                      [32m✔[0m testthat 3.3.2                           [2.2 MB in 0.86s]
+#22 15.89   (28/151) Downloading: terra, tinytex, haven, survey, ...                                                                                                      [32m✔[0m tinytex 0.60                             [151 kB in 1.6s]
+#22 15.97   (29/151) Downloading: terra, haven, survey, s2, ...                                                                                                           [32m✔[0m terra 1.9-34                             [5.8 MB in 3.1s]
+#22 15.98   (30/151) Downloading: haven, survey, s2, bslib, ...                                                                                                           [32m✔[0m bslib 0.11.0                             [6.2 MB in 1.3s]
+#22 16.04   (31/151) Downloading: haven, survey, s2, desc, ...                                                                                                            [32m✔[0m haven 2.5.5                              [401 kB in 1.6s]
+#22 16.10   (32/151) Downloading: survey, s2, desc, gt, ...                                                                                                               [32m✔[0m lifecycle 1.0.5                          [135 kB in 0.73s]
+#22 16.12   (33/151) Downloading: survey, s2, desc, gt, ...                                                                                                               [32m✔[0m pkgconfig 2.0.3                          [20 kB in 0.69s]
+#22 16.13   (34/151) Downloading: survey, s2, desc, gt, ...                                                                                                               [32m✔[0m mime 0.13                                [47 kB in 0.8s]
+#22 16.16   (35/151) Downloading: survey, s2, desc, gt, ...                                                                                                               [32m✔[0m fastmap 1.2.0                            [75 kB in 0.73s]
+#22 16.28   (36/151) Downloading: survey, s2, desc, gt, ...                                                                                                               [32m✔[0m s2 1.1.11                                [2.2 MB in 2.2s]
+#22 16.75   (37/151) Downloading: survey, desc, gt, igraph, ...                                                                                                           [32m✔[0m desc 1.4.3                               [341 kB in 1.8s]
+#22 16.81   (38/151) Downloading: survey, gt, igraph, R6, ...                                                                                                             [32m✔[0m survey 4.5                               [3.6 MB in 2.3s]
+#22 16.87   (39/151) Downloading: gt, igraph, R6, digest, ...                                                                                                             [32m✔[0m digest 0.6.39                            [236 kB in 1.2s]
+#22 17.01   (40/151) Downloading: gt, igraph, R6, numDeriv, ...                                                                                                           [32m✔[0m numDeriv 2016.8-1.1                      [116 kB in 1.2s]
+#22 17.05   (41/151) Downloading: gt, igraph, R6, ps, ...                                                                                                                 [32m✔[0m rprojroot 2.1.1                          [117 kB in 1.3s]
+#22 17.27   (42/151) Downloading: gt, igraph, R6, ps, ...                                                                                                                 [32m✔[0m pkgload 1.5.3                            [228 kB in 1.4s]
+#22 17.42   (43/151) Downloading: gt, igraph, R6, ps, ...                                                                                                                 [32m✔[0m igraph 2.3.2                             [6.2 MB in 2.6s]
+#22 17.78   (44/151) Downloading: gt, R6, ps, reactR, ...                                                                                                                 [32m✔[0m R6 2.6.1                                 [90 kB in 2.4s]
+#22 17.89   (45/151) Downloading: gt, ps, reactR, base64url, ...                                                                                                          [32m✔[0m base64url 1.4                            [27 kB in 1.8s]
+#22 17.97   (46/151) Downloading: gt, ps, reactR, labeling, ...                                                                                                           [32m✔[0m reactR 0.6.1                             [614 kB in 1.9s]
+#22 17.99   (47/151) Downloading: gt, ps, labeling, httr, ...                                                                                                             [32m✔[0m gt 1.3.0                                 [6.4 MB in 3.5s]
+#22 18.56   (48/151) Downloading: ps, labeling, httr, here, ...                                                                                                           [32m✔[0m httr 1.4.8                               [485 kB in 2.5s]
+#22 18.65   (49/151) Downloading: ps, labeling, here, proxy, ...                                                                                                          [32m✔[0m labeling 0.4.3                           [62 kB in 2.5s]
+#22 18.66   (50/151) Downloading: ps, here, proxy, withr, ...                                                                                                             [32m✔[0m withr 3.0.3                              [229 kB in 1.9s]
+#22 18.70   (51/151) Downloading: ps, here, proxy, bit64, ...                                                                                                             [32m✔[0m proxy 0.4-29                             [174 kB in 2.0s]
+#22 18.72   (52/151) Downloading: ps, here, bit64, brew, ...                                                                                                              [32m✔[0m here 1.0.2                               [57 kB in 2.5s]
+#22 18.75   (53/151) Downloading: ps, bit64, brew, S7, ...                                                                                                                [32m✔[0m ps 1.9.3                                 [516 kB in 2.8s]
+#22 18.76   (54/151) Downloading: bit64, brew, S7, backports, ...                                                                                                         [32m✔[0m brew 1.0-10                              [79 kB in 1.8s]
+#22 18.77   (55/151) Downloading: bit64, S7, backports, praise, ...                                                                                                       [32m✔[0m backports 1.5.1                          [120 kB in 1.5s]
+#22 18.78   (56/151) Downloading: bit64, S7, praise, DBI, ...                                                                                                             [32m✔[0m bit64 4.8.2                              [565 kB in 2.0s]
+#22 18.89   (57/151) Downloading: S7, praise, DBI, bench, ...                                                                                                             [32m✔[0m S7 0.2.2                                 [330 kB in 1.9s]
+#22 18.91   (58/151) Downloading: praise, DBI, bench, pkgbuild, ...                                                                                                       [32m✔[0m praise 1.0.0                             [18 kB in 1.5s]
+#22 18.91   (59/151) Downloading: DBI, bench, pkgbuild, highr, ...                                                                                                        [32m✔[0m bench 1.1.4                              [404 kB in 1.1s]
+#22 18.94   (60/151) Downloading: DBI, pkgbuild, highr, R.utils, ...                                                                                                      [32m✔[0m pkgbuild 1.4.8                           [213 kB in 1.0s]
+#22 18.97   (61/151) Downloading: DBI, highr, R.utils, duckdb, ...                                                                                                        [32m✔[0m DBI 1.3.0                                [944 kB in 1.2s]
+#22 19.01   (62/151) Downloading: highr, R.utils, duckdb, collections, ...                                                                                                [32m✔[0m highr 0.12                               [40 kB in 1.0s]
+#22 19.01   (63/151) Downloading: R.utils, duckdb, collections, openssl, ...                                                                                              [32m✔[0m openssl 2.4.2                            [1.3 MB in 0.48s]
+#22 19.18   (64/151) Downloading: R.utils, duckdb, collections, rappdirs, ...                                                                                             [32m✔[0m rappdirs 0.3.4                           [49 kB in 0.46s]
+#22 19.19   (65/151) Downloading: R.utils, duckdb, collections, rjson, ...                                                                                                [32m✔[0m collections 0.3.12                       [72 kB in 0.53s]
+#22 19.19   (66/151) Downloading: R.utils, duckdb, rjson, classInt, ...                                                                                                   [32m✔[0m rjson 0.2.23                             [117 kB in 0.46s]
+#22 19.21   (67/151) Downloading: R.utils, duckdb, classInt, RcppTOML, ...                                                                                                [32m✔[0m classInt 0.4-11                          [499 kB in 0.52s]
+#22 19.28   (68/151) Downloading: R.utils, duckdb, RcppTOML, units, ...                                                                                                   [32m✔[0m reactable 0.4.5                          [1.1 MB in 0.51s]
+#22 19.42   (69/151) Downloading: R.utils, duckdb, RcppTOML, units, ...                                                                                                   [32m✔[0m otel 0.2.0                               [283 kB in 0.54s]
+#22 19.45   (70/151) Downloading: R.utils, duckdb, RcppTOML, units, ...                                                                                                   [32m✔[0m glue 1.8.1                               [179 kB in 0.47s]
+#22 19.48   (71/151) Downloading: R.utils, duckdb, RcppTOML, units, ...                                                                                                   [32m✔[0m clipr 0.8.1                              [56 kB in 0.52s]
+#22 19.49   (72/151) Downloading: R.utils, duckdb, RcppTOML, units, ...                                                                                                   [32m✔[0m callr 3.8.0                              [480 kB in 0.33s]
+#22 19.51   (73/151) Downloading: R.utils, duckdb, RcppTOML, units, ...                                                                                                   [32m✔[0m getPass 0.2-4                            [229 kB in 0.24s]
+#22 19.66   (74/151) Downloading: R.utils, duckdb, RcppTOML, units, ...                                                                                                   [32m✔[0m generics 0.1.4                           [83 kB in 0.24s]
+#22 19.70   (75/151) Downloading: R.utils, duckdb, RcppTOML, units, ...                                                                                                   [32m✔[0m gtable 0.3.6                             [227 kB in 0.22s]
+#22 19.73   (76/151) Downloading: R.utils, duckdb, RcppTOML, units, ...                                                                                                   [32m✔[0m isoband 0.3.0                            [1.7 MB in 0.45s]
+#22 19.94   (77/151) Downloading: R.utils, duckdb, RcppTOML, units, ...                                                                                                   [32m✔[0m RcppTOML 0.2.3                           [252 kB in 1.2s]
+#22 19.96   (78/151) Downloading: R.utils, duckdb, units, JuliaCall, ...                                                                                                  [32m✔[0m R.utils 2.13.0                           [1.5 MB in 1.6s]
+#22 20.14   (79/151) Downloading: duckdb, units, JuliaCall, lintr, ...                                                                                                    [32m✔[0m tzdb 0.5.0                               [675 kB in 0.56s]
+#22 20.25   (80/151) Downloading: duckdb, units, JuliaCall, lintr, ...                                                                                                    [32m✔[0m units 1.0-1                              [495 kB in 1.5s]
+#22 20.28   (81/151) Downloading: duckdb, JuliaCall, lintr, R.oo, ...                                                                                                     [32m✔[0m profmem 0.7.0                            [52 kB in 1.2s]
+#22 20.39   (82/151) Downloading: duckdb, JuliaCall, lintr, R.oo, ...                                                                                                     [32m✔[0m R.cache 0.17.0                           [115 kB in 1.6s]
+#22 20.75   (83/151) Downloading: duckdb, JuliaCall, lintr, R.oo, ...                                                                                                     [32m✔[0m tidyr 1.3.2                              [1.2 MB in 0.98s]
+#22 20.92   (84/151) Downloading: duckdb, JuliaCall, lintr, R.oo, ...                                                                                                     [32m✔[0m JuliaCall 0.17.6                         [942 kB in 2.0s]
+#22 20.94   (85/151) Downloading: duckdb, lintr, R.oo, promises, ...                                                                                                      [32m✔[0m lintr 3.3.0-1                            [1.4 MB in 2.4s]
+#22 21.34   (86/151) Downloading: duckdb, R.oo, promises, sf, ...                                                                                                         [32m✔[0m R.oo 1.27.1                              [999 kB in 2.6s]
+#22 21.58   (87/151) Downloading: duckdb, promises, sf, diffobj, ...                                                                                                      [32m✔[0m xml2 1.6.0                               [287 kB in 1.7s]
+#22 22.00   (88/151) Downloading: duckdb, promises, sf, diffobj, ...                                                                                                      [32m✔[0m utf8 1.2.6                               [156 kB in 1.8s]
+#22 22.06   (89/151) Downloading: duckdb, promises, sf, diffobj, ...                                                                                                      [32m✔[0m pillar 1.11.1                            [665 kB in 2.0s]
+#22 22.37   (90/151) Downloading: duckdb, promises, sf, diffobj, ...                                                                                                      [32m✔[0m promises 1.5.0                           [1.7 MB in 3.2s]
+#22 22.38   (91/151) Downloading: duckdb, sf, diffobj, labelled, ...                                                                                                      [32m✔[0m R.methodsS3 1.8.2                        [84 kB in 2.9s]
+#22 22.61   (92/151) Downloading: duckdb, sf, diffobj, labelled, ...                                                                                                      [32m✔[0m diffobj 0.3.6                            [1.0 MB in 3.1s]
+#22 22.62   (93/151) Downloading: duckdb, sf, labelled, data.table, ...                                                                                                   [32m✔[0m sf 1.1-1                                 [4.2 MB in 3.4s]
+#22 22.72   (94/151) Downloading: duckdb, labelled, data.table, hms, ...                                                                                                  [32m✔[0m labelled 2.16.0                          [387 kB in 3.1s]
+#22 22.73   (95/151) Downloading: duckdb, data.table, hms, markdown, ...                                                                                                  [32m✔[0m markdown 2.0                             [67 kB in 2.0s]
+#22 22.75   (96/151) Downloading: duckdb, data.table, hms, stringr, ...                                                                                                   [32m✔[0m hms 1.1.4                                [106 kB in 2.6s]
+#22 22.78   (97/151) Downloading: duckdb, data.table, stringr, vroom, ...                                                                                                 [32m✔[0m stringr 1.6.0                            [343 kB in 1.9s]
+#22 22.83   (98/151) Downloading: duckdb, data.table, vroom, later, ...                                                                                                   [32m✔[0m vroom 1.7.1                              [1.0 MB in 2.1s]
+#22 23.01   (99/151) Downloading: duckdb, data.table, later, mitools, ...                                                                                                 [32m✔[0m data.table 1.18.4                        [3.0 MB in 4.0s]
+#22 23.95   (100/151) Downloading: duckdb, later, mitools, dplyr, ...                                                                                                     [32m✔[0m later 1.4.8                              [161 kB in 2.6s]
+#22 23.97   (101/151) Downloading: duckdb, mitools, dplyr, bit, ...                                                                                                       [32m✔[0m dplyr 1.2.1                              [1.5 MB in 2.2s]
+#22 24.18   (102/151) Downloading: duckdb, mitools, bit, tidyselect, ...                                                                                                  [32m✔[0m bit 4.6.0                                [629 kB in 2.2s]
+#22 24.26   (103/151) Downloading: duckdb, mitools, tidyselect, tarchetypes, ...                                                                                          [32m✔[0m tidyselect 1.2.1                         [228 kB in 1.9s]
+#22 24.30   (104/151) Downloading: duckdb, mitools, tarchetypes, juicyjuice, ...                                                                                          [32m✔[0m mitools 2.4                              [273 kB in 2.7s]
+#22 24.32   (105/151) Downloading: duckdb, tarchetypes, juicyjuice, knitr, ...                                                                                            [32m✔[0m juicyjuice 0.1.0                         [1.1 MB in 1.8s]
+#22 24.44   (106/151) Downloading: duckdb, tarchetypes, knitr, V8, ...                                                                                                    [32m✔[0m brio 1.1.5                               [39 kB in 1.7s]
+#22 24.45   (107/151) Downloading: duckdb, tarchetypes, knitr, V8, ...                                                                                                    [32m✔[0m rex 1.2.2                                [129 kB in 1.6s]
+#22 24.45   (108/151) Downloading: duckdb, tarchetypes, knitr, V8, ...                                                                                                    [32m✔[0m duckdb 1.5.4                             [17.7 MB in 6.0s]
+#22 24.67   (109/151) Downloading: tarchetypes, knitr, V8, litedown, ...                                                                                                  [32m✔[0m knitr 1.51                               [1.1 MB in 2.2s]
+#22 24.82   (110/151) Downloading: tarchetypes, V8, litedown, xfun, ...                                                                                                   [32m✔[0m tarchetypes 0.14.1                       [969 kB in 2.6s]
+#22 25.00   (111/151) Downloading: V8, litedown, xfun, stringi, ...                                                                                                       [32m✔[0m litedown 0.9                             [380 kB in 2.4s]
+#22 25.10   (112/151) Downloading: V8, xfun, stringi, yaml, ...                                                                                                           [32m✔[0m V8 8.2.0                                 [724 kB in 2.4s]
+#22 25.17   (113/151) Downloading: xfun, stringi, yaml, evaluate, ...                                                                                                     [32m✔[0m xfun 0.59                                [645 kB in 2.4s]
+#22 25.19   (114/151) Downloading: stringi, yaml, evaluate, tibble, ...                                                                                                   [32m✔[0m stringi 1.8.7                            [3.5 MB in 2.5s]
+#22 25.49   (115/151) Downloading: yaml, evaluate, tibble, cli, ...                                                                                                       [32m✔[0m evaluate 1.0.5                           [105 kB in 1.5s]
+#22 25.51   (116/151) Downloading: yaml, tibble, cli, blastula, ...                                                                                                       [32m✔[0m yaml 2.3.12                              [124 kB in 1.6s]
+#22 25.52   (117/151) Downloading: tibble, cli, blastula, secretbase, ...                                                                                                 [32m✔[0m tibble 3.3.1                             [654 kB in 1.4s]
+#22 25.61   (118/151) Downloading: cli, blastula, secretbase, arrow, ...                                                                                                  [32m✔[0m processx 3.9.0                           [413 kB in 1.4s]
+#22 25.83   (119/151) Downloading: cli, blastula, secretbase, arrow, ...                                                                                                  [32m✔[0m cli 3.6.6                                [1.3 MB in 1.6s]
+#22 25.84   (120/151) Downloading: blastula, secretbase, arrow, reticulate, ...                                                                                           [32m✔[0m blastula 0.3.6                           [1.2 MB in 1.7s]
+#22 25.97   (121/151) Downloading: secretbase, arrow, reticulate, jquerylib, ...                                                                                          [32m✔[0m jquerylib 0.1.4                          [530 kB in 1.3s]
+#22 25.98   (122/151) Downloading: secretbase, arrow, reticulate, styler, ...                                                                                             [32m✔[0m styler 1.11.0                            [831 kB in 1.3s]
+#22 26.10   (123/151) Downloading: secretbase, arrow, reticulate, roxygen2, ...                                                                                           [32m✔[0m secretbase 1.3.0                         [82 kB in 1.8s]
+#22 26.11   (124/151) Downloading: arrow, reticulate, roxygen2, xmlparsedata, ...                                                                                         [32m✔[0m xmlparsedata 1.0.5                       [24 kB in 1.0s]
+#22 26.11   (125/151) Downloading: arrow, reticulate, roxygen2, mirai, ...                                                                                                [32m✔[0m dbplyr 2.6.0                             [1.3 MB in 0.86s]
+#22 26.35   (126/151) Downloading: arrow, reticulate, roxygen2, mirai, ...                                                                                                [32m✔[0m png 0.1-9                                [43 kB in 0.83s]
+#22 26.36   (127/151) Downloading: arrow, reticulate, roxygen2, mirai, ...                                                                                                [32m✔[0m Rcpp 1.1.1-1.1                           [2.3 MB in 1.8s]
+#22 26.95   (128/151) Downloading: arrow, reticulate, roxygen2, mirai, ...                                                                                                [32m✔[0m reticulate 1.46.0                        [2.0 MB in 2.6s]
+#22 27.01   (129/151) Downloading: arrow, roxygen2, mirai, pointblank, ...                                                                                                [32m✔[0m ggplot2 4.0.3                            [8.5 MB in 2.1s]
+#22 27.94   (130/151) Downloading: arrow, roxygen2, mirai, pointblank, ...                                                                                                [32m✔[0m mirai 2.7.1                              [339 kB in 3.2s]
+#22 28.39   (131/151) Downloading: arrow, roxygen2, pointblank, nanonext, ...                                                                                             [32m✔[0m roxygen2 8.0.0                           [874 kB in 3.8s]
+#22 28.83   (132/151) Downloading: arrow, pointblank, nanonext, crew, ...                                                                                                 [32m✔[0m assertthat 0.2.1                         [57 kB in 2.8s]
+#22 28.84   (133/151) Downloading: arrow, pointblank, nanonext, crew, ...                                                                                                 [32m✔[0m bitops 1.0-9                             [28 kB in 2.9s]
+#22 29.02   (134/151) Downloading: arrow, pointblank, nanonext, crew, ...                                                                                                 [32m✔[0m nanonext 1.9.1                           [797 kB in 3.7s]
+#22 29.29   (135/151) Downloading: arrow, pointblank, crew, readr, ...                                                                                                    [32m✔[0m pointblank 0.12.3                        [3.1 MB in 3.8s]
+#22 29.32   (136/151) Downloading: arrow, crew, readr, blob, ...                                                                                                          [32m✔[0m blob 1.3.0                               [52 kB in 3.3s]
+#22 29.39   (137/151) Downloading: arrow, crew, readr, prettyunits, ...                                                                                                   [32m✔[0m prettyunits 1.2.0                        [158 kB in 3.4s]
+#22 29.55   (138/151) Downloading: arrow, crew, readr, viridisLite, ...                                                                                                   [32m✔[0m readr 2.2.0                              [851 kB in 3.6s]
+#22 29.56   (139/151) Downloading: arrow, crew, viridisLite, targets, ...                                                                                                 [32m✔[0m crew 1.3.1                               [1.2 MB in 3.8s]
+#22 29.62   (140/151) Downloading: arrow, viridisLite, targets, scales, ...                                                                                               [32m✔[0m e1071 1.7-17                             [590 kB in 2.7s]
+#22 29.68   (141/151) Downloading: arrow, viridisLite, targets, scales, ...                                                                                               [32m✔[0m scales 1.4.0                             [848 kB in 2.7s]
+#22 29.70   (142/151) Downloading: arrow, viridisLite, targets, srvyr, ...                                                                                                [32m✔[0m viridisLite 0.4.3                        [1.3 MB in 3.6s]
+#22 29.92   (143/151) Downloading: arrow, targets, srvyr, purrr, ...                                                                                                      [32m✔[0m targets 1.12.0                           [2.7 MB in 3.7s]
+#22 30.04   (144/151) Downloading: arrow, srvyr, purrr, crayon, ...                                                                                                       [32m✔[0m srvyr 1.3.1                              [806 kB in 2.7s]
+#22 30.64   (145/151) Downloading: arrow, purrr, crayon, rlang, ...                                                                                                       [32m✔[0m purrr 1.2.2                              [558 kB in 2.3s]
+#22 30.70   (146/151) Downloading: arrow, crayon, rlang, bigD, ...                                                                                                        [32m✔[0m crayon 1.5.3                             [168 kB in 1.9s]
+#22 30.72   (147/151) Downloading: arrow, rlang, bigD, waldo                                                                                                              [32m✔[0m bigD 0.3.1                               [1.2 MB in 1.8s]
+#22 30.87   (148/151) Downloading: arrow, rlang, waldo                                                                                                                    [32m✔[0m waldo 0.6.2                              [139 kB in 1.7s]
+#22 31.00   (149/151) Downloading: arrow, rlang                                                                                                                           [32m✔[0m rlang 1.2.0                              [1.6 MB in 2.3s]
+#22 31.11   (150/151) Downloading: arrow                                                                                                                                  [32m✔[0m arrow 24.0.0                             [22.2 MB in 7.4s]
+#22 31.90                                                                                 Successfully downloaded 151 packages in 19 seconds.
+#22 31.91 
+#22 31.91 # Installing packages --------------------------------------------------------
+#22 35.59                                                                                 [32m✔[0m assertthat 0.2.1                         [installed binary]
+#22 35.95                                                                                 [32m✔[0m backports 1.5.1                          [installed binary]
+#22 36.23                                                                                 [32m✔[0m base64enc 0.1-6                          [installed binary]
+#22 36.51                                                                                 [32m✔[0m bigD 0.3.1                               [installed binary]
+#22 36.80                                                                                 [32m✔[0m bit 4.6.0                                [installed binary]
+#22 37.09                                                                                 [32m✔[0m bitops 1.0-9                             [installed binary]
+#22 37.35                                                                                 [32m✔[0m brew 1.0-10                              [installed binary]
+#22 37.62                                                                                 [32m✔[0m brio 1.1.5                               [installed binary]
+#22 37.91                                                                                 [32m✔[0m cli 3.6.6                                [installed binary]
+#22 38.39                                                                                 [32m✔[0m clipr 0.8.1                              [installed binary]
+#22 38.68                                                                                 [32m✔[0m collections 0.3.12                       [installed binary]
+#22 38.95                                                                                 [32m✔[0m commonmark 2.0.0                         [installed binary]
+#22 39.35                                                                                 [32m✔[0m cpp11 0.5.5                              [installed binary]
+#22 39.62                                                                                 [32m✔[0m crayon 1.5.3                             [installed binary]
+#22 40.04                                                                                 [32m✔[0m curl 7.1.0                               [installed binary]
+#22 40.37                                                                                 [32m✔[0m data.table 1.18.4                        [installed binary]
+#22 40.72                                                                                 [32m✔[0m DBI 1.3.0                                [installed binary]
+#22 41.16                                                                                 [32m✔[0m digest 0.6.39                            [installed binary]
+#22 41.48                                                                                 [32m✔[0m evaluate 1.0.5                           [installed binary]
+#22 41.93                                                                                 [32m✔[0m farver 2.1.2                             [installed binary]
+#22 42.22                                                                                 [32m✔[0m fastmap 1.2.0                            [installed binary]
+#22 42.49                                                                                 [32m✔[0m fs 2.1.0                                 [installed binary]
+#22 42.82                                                                                 [32m✔[0m generics 0.1.4                           [installed binary]
+#22 43.08                                                                                 [32m✔[0m glue 1.8.1                               [installed binary]
+#22 43.42                                                                                 [32m✔[0m jsonlite 2.0.0                           [installed binary]
+#22 43.71                                                                                 [32m✔[0m labeling 0.4.3                           [installed binary]
+#22 43.99                                                                                 [32m✔[0m magrittr 2.0.5                           [installed binary]
+#22 44.27                                                                                 [32m✔[0m mime 0.13                                [installed binary]
+#22 44.55                                                                                 [32m✔[0m nanonext 1.9.1                           [installed binary]
+#22 44.85                                                                                 [32m✔[0m numDeriv 2016.8-1.1                      [installed binary]
+#22 45.12                                                                                 [32m✔[0m otel 0.2.0                               [installed binary]
+#22 45.40                                                                                 [32m✔[0m pkgconfig 2.0.3                          [installed binary]
+#22 45.67                                                                                 [32m✔[0m png 0.1-9                                [installed binary]
+#22 45.92                                                                                 [32m✔[0m praise 1.0.0                             [installed binary]
+#22 46.19                                                                                 [32m✔[0m prettyunits 1.2.0                        [installed binary]
+#22 46.46                                                                                 [32m✔[0m profmem 0.7.0                            [installed binary]
+#22 46.74                                                                                 [32m✔[0m proxy 0.4-29                             [installed binary]
+#22 47.01                                                                                 [32m✔[0m ps 1.9.3                                 [installed binary]
+#22 47.28                                                                                 [32m✔[0m R.methodsS3 1.8.2                        [installed binary]
+#22 47.55                                                                                 [32m✔[0m R6 2.6.1                                 [installed binary]
+#22 47.83                                                                                 [32m✔[0m rappdirs 0.3.4                           [installed binary]
+#22 48.10                                                                                 [32m✔[0m RColorBrewer 1.1-3                       [installed binary]
+#22 48.44                                                                                 [32m✔[0m Rcpp 1.1.1-1.1                           [installed binary]
+#22 48.95                                                                                 [32m✔[0m rjson 0.2.23                             [installed binary]
+#22 49.20                                                                                 [32m✔[0m rlang 1.2.0                              [installed binary]
+#22 49.59                                                                                 [32m✔[0m rprojroot 2.1.1                          [installed binary]
+#22 49.97                                                                                 [32m✔[0m rstudioapi 0.19.0                        [installed binary]
+#22 50.24                                                                                 [32m✔[0m S7 0.2.2                                 [installed binary]
+#22 50.54                                                                                 [32m✔[0m secretbase 1.3.0                         [installed binary]
+#22 50.93                                                                                 [32m✔[0m stringi 1.8.7                            [installed binary]
+#22 51.26                                                                                 [32m✔[0m sys 3.4.3                                [installed binary]
+#22 51.57                                                                                 [32m✔[0m utf8 1.2.6                               [installed binary]
+#22 51.84                                                                                 [32m✔[0m uuid 1.2-2                               [installed binary]
+#22 52.11                                                                                 [32m✔[0m viridisLite 0.4.3                        [installed binary]
+#22 52.37                                                                                 [32m✔[0m withr 3.0.3                              [installed binary]
+#22 52.65                                                                                 [32m✔[0m wk 0.9.5                                 [installed binary]
+#22 52.95                                                                                 [32m✔[0m xfun 0.59                                [installed binary]
+#22 53.23                                                                                 [32m✔[0m xmlparsedata 1.0.5                       [installed binary]
+#22 53.50                                                                                 [32m✔[0m yaml 2.3.12                              [installed binary]
+#22 53.77                                                                                 [32m✔[0m base64url 1.4                            [installed binary]
+#22 54.03                                                                                 [32m✔[0m bit64 4.8.2                              [installed binary]
+#22 54.35                                                                                 [32m✔[0m tzdb 0.5.0                               [installed binary]
+#22 54.65                                                                                 [32m✔[0m diffobj 0.3.6                            [installed binary]
+#22 55.43                                                                                 [32m✔[0m duckdb 1.5.4                             [installed binary]
+#22 56.15                                                                                 [32m✔[0m mitools 2.4                              [installed binary]
+#22 56.54                                                                                 [32m✔[0m mirai 2.7.1                              [installed binary]
+#22 56.92                                                                                 [32m✔[0m e1071 1.7-17                             [installed binary]
+#22 57.23                                                                                 [32m✔[0m R.oo 1.27.1                              [installed binary]
+#22 57.51                                                                                 [32m✔[0m desc 1.4.3                               [installed binary]
+#22 57.80                                                                                 [32m✔[0m processx 3.9.0                           [installed binary]
+#22 58.08                                                                                 [32m✔[0m minqa 1.2.8                              [installed binary]
+#22 58.53                                                                                 [32m✔[0m RcppArmadillo 15.4.0-1                   [installed binary]
+#22 58.98                                                                                 [32m✔[0m RcppTOML 0.2.3                           [installed binary]
+#22 59.45                                                                                 [32m✔[0m terra 1.9-34                             [installed binary]
+#22 64.76                                                                                 [32m✔[0m units 1.0-1                              [installed binary]
+#22 65.26                                                                                 [32m✔[0m V8 8.2.0                                 [installed binary]
+#22 65.63 Error: error testing if 'V8' can be loaded [error code 1]
+#22 65.63 /usr/local/lib/R/bin/R --vanilla -s -f '/tmp/Rtmp1Agung/renv-install-762948fe8.R'
+#22 65.63 ================================================================================
+#22 65.63 
+#22 65.63 Error in dyn.load(file, DLLpath = DLLpath, ...) : 
+#22 65.63   unable to load shared object '/usr/local/lib/R/site-library/.renv/1/V8/libs/V8.so':
+#22 65.63   libnode.so.109: cannot open shared object file: No such file or directory
+#22 65.63 Calls: loadNamespace -> library.dynam -> dyn.load
+#22 65.63 Execution halted
+#22 65.65 Traceback (most recent calls last):
+#22 65.65 10: renv::restore(project = here, lockfile = lock, library = lib, 
+#22 65.65         prompt = FALSE, clean = FALSE)
+#22 65.65  9: renv_restore_run_actions(project, diff, current, lockfile, rebuild, 
+#22 65.65         strict, descriptions)
+#22 65.65  8: renv_graph_install(descriptions)
+#22 65.65  7: handle(pkg, list(success = success, output = output, elapsed = elapsed))
+#22 65.65  6: renv_graph_install_finalize(entry$record, entry$prepared, installdir, 
+#22 65.65         project, linkable)
+#22 65.65  5: tryCatch(renv_install_test(package), error = function(err) {
+#22 65.65         unlink(installpath, recursive = TRUE)
+#22 65.65         stop(err)
+#22 65.65     })
+#22 65.65  4: tryCatchList(expr, classes, parentenv, handlers)
+#22 65.65  3: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+#22 65.65  2: value[[3L]](cond)
+#22 65.65  1: stop(err)
+#22 65.65 [?25hExecution halted
+#22 ERROR: process "/bin/sh -c Rscript /opt/env/r/install_packages.R     && Rscript -e 'library(arrow); library(duckdb); library(sf); library(targets); cat(\"R stack ok\\n\")'" did not complete successfully: exit code: 1
+------
+ > [base 13/18] RUN Rscript /opt/env/r/install_packages.R     && Rscript -e 'library(arrow); library(duckdb); library(sf); library(targets); cat("R stack ok\n")':
+65.63 Error: error testing if 'V8' can be loaded [error code 1]
+65.63 /usr/local/lib/R/bin/R --vanilla -s -f '/tmp/Rtmp1Agung/renv-install-762948fe8.R'
+65.63 ================================================================================
+65.63 
+65.63 Error in dyn.load(file, DLLpath = DLLpath, ...) : 
+65.63   unable to load shared object '/usr/local/lib/R/site-library/.renv/1/V8/libs/V8.so':
+65.63   libnode.so.109: cannot open shared object file: No such file or directory
+65.63 Calls: loadNamespace -> library.dynam -> dyn.load
+65.63 Execution halted
+Execution halted
+------
+failed to solve: process "/bin/sh -c Rscript /opt/env/r/install_packages.R     && Rscript -e 'library(arrow); library(duckdb); library(sf); library(targets); cat(\"R stack ok\\n\")'" did not complete successfully: exit code: 1
+
+
+
+View build details: docker-desktop://dashboard/build/default/default/rgdgsw1kiorsu32y3zy6b0o1q
+
