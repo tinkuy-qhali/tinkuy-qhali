@@ -8,22 +8,24 @@
 
 La especificación proponía un mapa de lenguajes a validar con benchmark: wrangling en DuckDB/arrow desde R o Python, inferencia con diseño muestral en R, ML en Python, simulación numérica en Julia "que sustituye a C++ salvo que un benchmark muestre lo contrario". El ítem 22 corrió dos tareas reproducibles dentro de la imagen sobre ENDES 2024 módulo 1629:
 
-| Tarea | Implementación | Mediana (s) |
-|---|---|---|
-| Join ponderado + agregación, 3,4 M filas | polars (Python) | 0,19 |
-| | DuckDB (Python) | 0,39 |
-| | DuckDB SQL desde R | 0,43 |
-| | arrow perezoso (R) | 0,43 |
-| | DuckDB vía dbplyr (R) | 0,70 |
-| | Julia DataFrames | 0,79 (+ 6–9 s de JIT por proceso) |
-| | data.table (R) | 1,05 |
-| | dplyr en memoria (R) | 1,69 |
-| Microsimulación 1e6 × 10 pasos | Julia multihilo | 0,06 |
-| | Julia bucle (1 hilo) | 0,21 |
-| | pyarrow.compute | 0,28 |
-| | Rcpp (1 hilo) | 0,33 |
-| | R vectorizado | 0,74 |
-| | DuckDB SQL | 1,04 |
+| Tarea | Implementación | Mediana x1 (135 k filas reales) | Mediana x25 (3,4 M filas, réplica sintética) |
+|---|---|---|---|
+| Join ponderado + agregación | polars (Python) | 0,044 | 0,19 |
+| | DuckDB (Python) | 0,13 | 0,39 |
+| | DuckDB SQL desde R | 0,15 | 0,43 |
+| | arrow perezoso (R) | 0,26 | 0,43 |
+| | DuckDB vía dbplyr (R) | 0,42 | 0,70 |
+| | Julia DataFrames | 0,03 (+ 6–9 s de JIT por proceso) | 0,79 |
+| | data.table (R) | 0,16 | 1,05 |
+| | dplyr en memoria (R) | 0,13 | 1,69 |
+| Microsimulación 1e6 × 10 pasos | Julia multihilo (7 hilos) | — | 0,06 (calentamiento 0,16 s) |
+| | Julia bucle (1 hilo) | — | 0,21 |
+| | pyarrow.compute | — | 0,28 |
+| | Rcpp (1 hilo) | — | 0,33 |
+| | R vectorizado | — | 0,74 |
+| | DuckDB SQL | — | 1,04 |
+
+A la escala real del módulo (x1) dplyr en memoria iguala o supera a DuckDB y arrow, y Julia es la más rápida una vez compilada: la escalera solo paga a partir de ~1 M de filas (revisión adversarial M8).
 
 Las 18 variantes del join coinciden (diferencia relativa ≤ 4e-13); las de microsimulación pasan pruebas z y χ² contra la expectativa analítica (la tolerancia 1e-3 no sirve como criterio: es del orden del error Monte Carlo). Diferencias < 1,5× no son concluyentes en este host.
 
@@ -35,12 +37,12 @@ Las 18 variantes del join coinciden (diferencia relativa ≤ 4e-13); las de micr
 
 ## Decisión
 
-1. **Mapa de lenguajes por tarea:** wrangling, joins y agregaciones → DuckDB o arrow desde R (SQL directo antes que `dbplyr` cuando el rendimiento importe), o polars/DuckDB desde Python si la etapa ya es Python; inferencia con diseño muestral, espacial y HTA → R (`survey`/`srvyr`); predicción/ML → Python; simulación, microsimulación, Monte Carlo y MCMC → Julia **multihilo** (`-t auto`) como proceso independiente (ADR 0011).
+1. **Mapa de lenguajes por tarea** (**[provisional]** hasta repetir el benchmark en la Ronda 1): wrangling, joins y agregaciones → dplyr en memoria por debajo de ~1 M de filas; por encima, DuckDB o arrow desde R (SQL directo antes que `dbplyr` cuando el rendimiento importe), o polars/DuckDB desde Python si la etapa ya es Python; inferencia con diseño muestral, espacial y HTA → R (`survey`/`srvyr`); predicción/ML → Python; **microsimulación multihilo medida** → Julia (`-t auto`) como proceso independiente (ADR 0011). MCMC queda **sin asignar** hasta un benchmark propio (Turing.jl frente a `cmdstanr`): a un hilo la ventaja de Julia sobre Rcpp (1,5×) está dentro del ruido y el 5,5× compara 7 hilos contra 1 (revisión adversarial M9).
 2. **Escalera de optimización con evidencia:** dplyr en memoria → arrow/DuckDB perezoso con `collect()` tardío → Rcpp encapsulado tras una función R con test de equivalencia → proceso Python o Julia. Cada salto exige `bench::mark` (≥ 3 repeticiones, mediana) más RSS pico, un test de equivalencia numérica y un ADR corto que cite las cifras; sin eso, no se cambia de peldaño.
 3. **Legibilidad al optimizar:** la interfaz pública siempre es una función R documentada con roxygen2; el C++ o el script externo quedan encapsulados; un test `testthat` compara la implementación rápida con la de referencia (bit-idéntica cuando el RNG lo permite; z y χ² cuando no).
 4. **Medición estándar:** `bench::mark(memory = TRUE)` para R, `tracemalloc` para Python, `@timed` para Julia, y **RSS pico del proceso** como única medida de memoria comparable entre lenguajes (`profmem` no ve las asignaciones de Arrow ni DuckDB). Cada etapa de `targets` registra `seconds`, `bytes` y `rss_peak_bytes` en el manifiesto de corrida.
 5. **Imagen:** `data.table` se declara explícitamente en `env/r/packages.txt` (ya está como dependencia transitiva 1.18.4) sin ser motor por defecto; Julia permanece en la imagen por `build-arg` (ADR 0006) y se usa solo para la decisión 1; se evalúan para la Fase 3 `numpy`, `duckplyr` y `profvis` (ausentes hoy). Dentro de la imagen, Python se invoca con `uv run --no-sync`.
-6. **Umbral de arranque:** una etapa en otro lenguaje solo se justifica si el ahorro medido supera su costo de arranque (Python ≈ 1,1 s, R ≈ 1,3 s, Julia ≈ 1,7 s + JIT) en la corrida completa.
+6. **Umbral de arranque por tipo de etapa:** una etapa en otro lenguaje solo se justifica si el ahorro medido supera su costo de arranque en la corrida completa: Python ≈ 1,1 s, R ≈ 1,3 s, Julia ≈ 1,7 s más la compilación de lo que use (0,16 s en la microsimulación; 6–9 s si carga DataFrames).
 
 ## Consecuencias
 

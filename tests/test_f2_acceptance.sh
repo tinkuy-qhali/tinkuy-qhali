@@ -6,7 +6,7 @@
 #     or mmdc and recorded in the Fuente: line — see docs/style/mermaid-iso5807.md)
 #   - tools/check_adr.py passes on docs/adr/ and its own test suite passes; ADRs 0008..0013 exist
 #   - six policies in docs/policies/ with the mandatory sections and >= 6 rules each; docs/preservation/ has 3 files
-#   - docs/reviews/f2-adversarial.md exists and reports no open critical finding
+#   - docs/reviews/f2-adversarial.md exists and its author response reports 0 open critical findings
 #   - all of the above are LF
 # Usage: bash tests/test_f2_acceptance.sh
 set -u
@@ -28,7 +28,7 @@ check "no mermaid block in docs/ lacks @{ shape } (classic syntax banned)" bash 
 
 check "check_adr.py self-test passes"             bash tests/test_check_adr.sh
 check "check_adr.py validates docs/adr"           python tools/check_adr.py
-for n in 0008 0009 0010 0011 0012 0013; do check "ADR $n exists" bash -c "ls docs/adr/$n-*.md"; done
+for n in 0008 0009 0010 0011 0012 0013 0014; do check "ADR $n exists" bash -c "ls docs/adr/$n-*.md"; done
 check "ADR 0001 marked superseded by 0008"        grep -q "superseded por ADR 0008" docs/adr/0001-config-claude-code.md
 
 for p in context hygiene security downstream r-style performance; do
@@ -41,7 +41,7 @@ check "docs/preservation has 3 files"             bash -c "[ \$(ls docs/preserva
 check "plan-3-2-1 has the loss-scenario table"    grep -qi "RPO" docs/preservation/plan-3-2-1.md
 
 check "adversarial review exists"                 test -f docs/reviews/f2-adversarial.md
-check "  reports no open critical finding"        bash -c "grep -qiE 'cr[ií]ticos? abiertos?: *0|sin hallazgos cr[ií]ticos abiertos' docs/reviews/f2-adversarial.md"
+check "  author response reports 0 open criticals"  bash -c "grep -qE '^Estado tras correcciones: Críticos abiertos: 0' docs/reviews/f2-adversarial.md"
 
 check "no CRLF in docs/{adr,policies,architecture,preservation,style,reviews}" bash -c '! grep -rl $'"'"'\r'"'"' docs/adr docs/policies docs/architecture docs/preservation docs/style docs/reviews 2>/dev/null | grep -q .'
 check "no leftover subagent worktrees"            bash -c '[ "$(git worktree list | grep -c worktrees/agent-)" -eq 0 ]'

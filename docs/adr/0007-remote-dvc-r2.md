@@ -42,5 +42,5 @@ Los bytes crudos no entran a git (ADR 0002/0003). Hace falta un almacenamiento d
 
 ## Consecuencias
 
-- `dvc pull` funciona para cualquiera con credenciales de lectura; para acceso público de lectura se evaluará en la Fase 1 (ítem 7) exponer el bucket con dominio público o usar Zenodo como ubicación pública canónica.
+- `dvc pull` funciona para quien tenga credenciales del remote correspondiente. **Addendum 2026-10-16 (ADR 0014):** ningún bucket que contenga nivel 3 se expone con dominio público ni se comparte por token; el acceso público canónico de niveles 1–2 es Zenodo o el remote `r2-open`.
 - Si R2 dejara de ser viable, el remote cambia sin tocar punteros: la identidad es el hash, no la URL.

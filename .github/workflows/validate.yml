@@ -43,3 +43,15 @@ jobs:
         run: |
           bash tests/test_check_research.sh
           python tools/check_research.py
+      - name: ADRs validate (tools/check_adr.py)
+        run: |
+          bash tests/test_check_adr.sh
+          python tools/check_adr.py
+      - name: no row-level data files or large blobs tracked (ADR 0010, level 3)
+        # Public repo since commit 1: block data extensions anywhere except an explicit allowlist, and blobs > 5 MB.
+        run: |
+          set -e
+          git ls-files | grep -iE '\.(csv|tsv|sav|dta|xlsx|xls|rds|rdata|feather|arrow|parquet|duckdb|sqlite|db)$' \
+            | grep -vE '^(tests/fixtures/|benchmarks/results\.csv$)' && { echo "data file tracked outside allowlist"; exit 1; } || true
+          big=$(git ls-files -z | xargs -0 -I{} sh -c 'test -f "{}" && stat -c "%s {}" "{}"' | awk '$1 > 5242880 {print}')
+          [ -z "$big" ] || { echo "blob > 5 MB tracked:"; echo "$big"; exit 1; }

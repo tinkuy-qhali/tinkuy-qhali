@@ -10,7 +10,7 @@ fuentes: [docs/research/07-infraestructura-de-espejos.md, docs/research/06-crite
 
 ## Cómo usar la plantilla
 
-1. Decidir qué niveles recibirá la institución (tabla de la carta). Por defecto solo nivel 1 y 2; el nivel 3 requiere revisión legal previa **[propuesta]**.
+1. Decidir qué niveles recibirá la institución (tabla de la carta): solo nivel 1 y 2. El nivel 3 no se ofrece a instituciones (soporte multiusuario); una fuente de nivel 3 con consentimiento escrito de su productor pasa a nivel 2 (ADR 0010 R5, ADR 0014).
 2. Completar los campos `[...]`, revisar y firmar. La carta completa va en la sección A; la versión corta para correo, en la B.
 3. Registrar la ubicación en `MIRRORS.md` del registry con `kind: institutional` y la fecha de aceptación.
 
@@ -32,9 +32,9 @@ tinkuy-qhali es un research compendium que referencia archivos de datos abiertos
 | Elemento | Detalle |
 |---|---|
 | Archivos | [lista de `pointer_id`, nombre de archivo, `sha256`, tamaño en bytes] |
-| Nivel de congelamiento | [1 público con DOI / 2 restringido con DOI / 3 solo con autorización expresa] |
+| Nivel de congelamiento | [1 público con DOI / 2 restringido con DOI] |
 | Volumen total | [N GB] en [N] paquetes |
-| Medio de entrega | [enlace Zenodo DOI / `dvc pull` con credenciales de solo lectura / disco físico] |
+| Medio de entrega | [enlace Zenodo DOI / `dvc pull` del remote `r2-open` con credenciales de solo lectura / disco físico] |
 | Licencia y condiciones de origen | [licencia, `terms_url`, obligación de cita de la fuente] |
 | Código y metadatos | punteros JSON y `MIRRORS.md` del repositorio `tinkuy-qhali-registry` |
 

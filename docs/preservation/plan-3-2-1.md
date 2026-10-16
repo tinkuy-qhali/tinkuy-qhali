@@ -19,7 +19,7 @@ Documento operativo derivado de los informes 06, 07 y 26 y del ADR 0007. Lo que 
 
 | Copia | Plataforma | Papel | Quién la escribe | Fuente |
 |---|---|---|---|---|
-| 1. Operativa | Cloudflare R2, bucket `tinkuy-qhali-raw`, remote DVC | trabajo diario, `dvc pull` de mirrors y usuarios | `dvc push` con credenciales en `.dvc/config.local` (solo el usuario) | ADR 0007 |
+| 1. Operativa | Cloudflare R2, dos remotes DVC: `r2-open` (niveles 1–2) y `r2-restricted` (nivel 3) (ADR 0014) | trabajo diario del usuario; `dvc pull` de mirrors y CI solo sobre `r2-open` | `dvc push` con credenciales en `.dvc/config.local`; el token de `r2-restricted` existe solo en la máquina del usuario | ADR 0007, 0014 |
 | 2. Citable | Zenodo (integración GitHub, un DOI por versión); solo niveles 1 y 2 | cita, permanencia, acceso público o restringido | release de GitHub o depósito manual | informes 06, 07 |
 | 3. Física | disco frío (preferente) o NAS UPN | recuperación si caen R2 y Zenodo | el usuario, copia manual con verificación de hash | informe 07 |
 
@@ -33,14 +33,14 @@ Estado actual: no hay backups físicos; la copia 3 está por crear. El ADR 0007 
 |---|---|---|---|---|
 | 1 público con DOI | bytes (recorte a Perú si pesa más de 10 GB) | bytes, acceso abierto | bytes, disco frío o NAS UPN | puntero, hash, DOI |
 | 2 restringido con DOI | bytes | bytes con acceso restringido, solo con autorización escrita (regla R5) | disco frío; NAS solo si la autorización lo permite **[propuesta]** | puntero, hash, DOI |
-| 3 receta + hash | bytes (privado) | nada | disco frío de un único usuario **[propuesta]**; NAS UPN no (ver abajo) | receta, `sha256`, `origin_url`, `terms_url` |
+| 3 receta + hash | bytes en `r2-restricted` (solo el usuario; nunca `dvc pull` compartido ni dominio público, ADR 0014) | nada | disco frío de un único usuario **[propuesta]**; NAS UPN no (ver abajo) | receta, `sha256`, `origin_url`, `terms_url` |
 | 4 no espejar | nada | nada | nada | solo nota de exclusión, sin bytes |
 
 Hoy hay 5 fuentes en nivel 1, 0 en 2, 15 en 3 y 2 en 4 (informe 06). ENDES 1629 (5 184 994 bytes, `sha256` 1a76f981...c799) está en nivel 3 confirmado por decisión del usuario; sube a 2 solo con consentimiento escrito del INEI.
 
 ### Límite honesto del nivel 3
 
-- Con 15 de 22 fuentes en nivel 3, la mayoría tendrá 2 copias de bytes (R2 y disco) más el origen mientras exista. Es un 3-2-1 incompleto por diseño: la tercera "copia" es la receta reproducible.
+- Con 15 de 22 fuentes en nivel 3, la mayoría tendrá 2 copias de bytes (R2 restringido y disco frío personal) más el origen mientras exista: es 2-2-1, no 3-2-1, por diseño; la tercera "copia" es la receta reproducible (así lo redacta también el ADR 0010).
 - Contradicción a resolver: el informe 07 ofrece "disco frío o NAS UPN" sin distinguir nivel, pero la política del INEI prohíbe copiar a soportes de acceso multiusuario sin consentimiento escrito (manifiesto ENDES). Un NAS institucional puede serlo. Hasta tener revisión legal, la regla es disco frío personal para nivel 3 **[propuesta]**.
 
 ## Cuotas y empaquetado
@@ -82,7 +82,7 @@ Objetivos globales: RPO 7 días, RTO 48 horas **[provisional]** (informe 26: pro
 
 ## Qué nunca se preserva
 
-- Datos personales no anonimizados por la fuente (Ley 29733), por ejemplo INCOR (nivel 4); tampoco registros de personas de SINADEF mientras no haya licencia y anonimización verificadas (informe 06).
+- Datos personales no anonimizados por la fuente (Ley 29733), por ejemplo INCOR (nivel 4); SINADEF solo se preserva (nivel 3) si la fuente publica registros anonimizados; si contiene datos personales pasa a nivel 4 (ADR 0010, regla R1 evaluada primero).
 - Nivel 4: ACLED (el EULA prohíbe redistribuir; solo se publican salidas transformadoras) y toda fuente sin licencia verificable con riesgo de datos personales.
 - Credenciales, tokens de R2 o Zenodo y `.dvc/config.local`: nunca en git ni en ninguna copia (ADR 0007).
 - Bytes de nivel 3 en Zenodo, Hugging Face público o cualquier mirror abierto.

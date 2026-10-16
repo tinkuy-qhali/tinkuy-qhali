@@ -64,11 +64,11 @@ Aprobado por el usuario tras ver el diff; respaldo en `settings.json.bak-2026101
 { "worktree": { "baseRef": "head" } }
 ```
 
-Los subagentes con `isolation: worktree` parten ahora del `HEAD` local. Verificado en esta sesión: el primer worktree creado tras el cambio ya contenía `docs/research/_plantilla.md` y `tools/check_research.py`; los anteriores nacían sin ellos y hubo que sembrarlos a mano. `defaultMode: "acceptEdits"` sigue programado para la Fase 3 junto con los hooks.
+Se añadió esa clave al archivo existente, que ya contenía `enabledPlugins` y `extraKnownMarketplaces` (tres plugins habilitados sin commit fijado: su fijación por `sha` y la revisión del skill `pptx` quedan para la cuarentena de la Fase 3, revisión adversarial M21). Los subagentes con `isolation: worktree` parten ahora del `HEAD` local. Verificado en esta sesión: el primer worktree creado tras el cambio ya contenía `docs/research/_plantilla.md` y `tools/check_research.py`; los anteriores nacían sin ellos y hubo que sembrarlos a mano. `defaultMode: "acceptEdits"` sigue programado para la Fase 3 junto con los hooks.
 
 ### (c) Hook `PreToolUse` (Fase 3, con test)
 
-Matcher `Bash|PowerShell`: normaliza el comando (quita `git -C <dir>`, `-c k=v`, ruta absoluta del binario, `bash -c`) y sale con código 2 ante push forzado, `reset --hard`, `clean -fd`, `filter-repo`, `dvc gc`, borrados recursivos y push a remotos no declarados. Un hook con exit 2 detiene la llamada antes de evaluar `allow`. Es la defensa real en Windows nativo, donde no hay sandbox; las reglas de permisos son la primera capa, no la única.
+Matcher `Bash|PowerShell|WebFetch|mcp__.*` (unifica el ADR, el informe 18 y `docs/policies/security.md`; addendum 2026-10-16 por la revisión adversarial M5): normaliza el comando, bloquea hosts fuera de `tools/allowed-domains.txt`, (quita `git -C <dir>`, `-c k=v`, ruta absoluta del binario, `bash -c`) y sale con código 2 ante push forzado, `reset --hard`, `clean -fd`, `filter-repo`, `dvc gc`, borrados recursivos y push a remotos no declarados. Un hook con exit 2 detiene la llamada antes de evaluar `allow`. Es la defensa real en Windows nativo, donde no hay sandbox; las reglas de permisos son la primera capa, no la única.
 
 ## Consecuencias
 

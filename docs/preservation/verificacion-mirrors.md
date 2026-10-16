@@ -18,7 +18,7 @@ Comprobar, para cada archivo, que cada ubicación declarada todavía entrega los
 |---|---|
 | `pointers/*.json` | `pointer_id`, `sha256`, `size_bytes`, `freeze_level`, `locations[]` con `kind`, `url`, `verified_at`; para DVC, `dvc_md5` (ADR 0007, addendum) |
 | `MIRRORS.md` | tabla `sha256`, `pointer_id`, nivel, `kind`, URL, `verified_at`, firma; debe coincidir con los punteros (fuente única: los punteros, `MIRRORS.md` se genera) |
-| Entorno | `DVC_*`/credenciales R2 de solo lectura como secretos del workflow; token de Zenodo solo si hay registros restringidos (nivel 2) |
+| Entorno | token de solo lectura de `r2-open` como secreto del workflow (nunca de `r2-restricted`, ADR 0014); token de Zenodo solo si hay registros restringidos (nivel 2) |
 
 Ejemplo real de puntero de partida: ENDES 1629 (`sha256` 1a76f981...c799, 5 184 994 bytes, nivel 3 confirmado, `origin_url` en proyectos.inei.gob.pe).
 
@@ -27,7 +27,7 @@ Ejemplo real de puntero de partida: ENDES 1629 (`sha256` 1a76f981...c799, 5 184 
 | `kind` | Comprobación mínima (siempre) | Comprobación profunda (`--deep`) | Qué prueba |
 |---|---|---|---|
 | `origin` | `HEAD` a `url`: código 2xx y `Content-Length` igual a `size_bytes` | descargar a directorio temporal y calcular `sha256` | que la fuente sigue publicando el mismo archivo |
-| `dvc-remote` | `dvc status -c` o `ls`/`HEAD` del objeto `files/md5/<2>/<30>` (`dvc_md5`) y tamaño igual a `size_bytes` | `dvc pull` del objeto y `sha256` | que R2 conserva el objeto; DVC 3 direcciona por MD5, así que sin `--deep` el `sha256` no se prueba |
+| `dvc-remote` | `dvc status -c` o `ls`/`HEAD` del objeto `files/md5/<2>/<30>` (`dvc_md5`) y tamaño igual a `size_bytes` | `dvc pull` del objeto y `sha256` **solo para niveles 1–2 o en la máquina del usuario; nunca `--deep` sobre nivel 3 en CI** (ADR 0014) | que R2 conserva el objeto; DVC 3 direcciona por MD5, así que sin `--deep` el `sha256` no se prueba |
 | `zenodo` | `GET` de la API del registro: archivo presente, tamaño igual y checksum publicado | descargar y calcular `sha256` | que el registro sigue vigente y no está revocado ni con tombstone |
 | `institutional` | declaración firmada vigente (no más antigua que la cadencia del acuerdo) | pedir al custodio el hash de un archivo elegido al azar (desafío) | que la institución verificó; no se puede automatizar la descarga |
 | `cold-storage` | declaración firmada del responsable con fecha y comando usado (`sha256sum -c`) | revisión manual con el disco conectado | que el disco frío sigue íntegro |
@@ -36,7 +36,7 @@ Notas por tipo:
 
 - **origin**: el portal del INEI rechazó una conexión durante la investigación (informe 06); un fallo aislado no significa retiro. Se marca `unavailable` solo tras 3 ejecuciones consecutivas fallidas. Respetar `terms_url`: la descarga profunda es para verificar, no para redistribuir.
 - **zenodo**: el informe 07 no verifica qué algoritmo de checksum expone la API; suele publicarse MD5, no `sha256` **[provisional]**. Por eso la comprobación mínima coteja tamaño y checksum publicado, y el `sha256` exige `--deep` o un `manifest.sha256` dentro del paquete. Nivel 3 no tiene ubicación Zenodo; si aparece una, es un error de política.
-- **dvc-remote**: las credenciales las pone el usuario (ADR 0007); en CI se usa un token de solo lectura limitado al bucket **[propuesta]**.
+- **dvc-remote**: las credenciales las pone el usuario (ADR 0007); en CI se usa un token de solo lectura limitado a `r2-open` (ADR 0014). Un objeto de nivel 3 alcanzable desde CI o público es `policy-violation`.
 - **institutional / cold-storage**: la declaración es un `attestation.json` con `pointer_id`, `sha256`, `verified_at`, método y firma; se acepta como evidencia, no como prueba.
 
 ## Resultados por ubicación
