@@ -2,6 +2,7 @@
 # Acceptance test for Phase 0.6 (spec: "Criterio de aceptación"). Runs on the host with Git Bash; every pipeline
 # check executes inside the container. Each line must pass before Phase 1 starts.
 set -u
+export MSYS_NO_PATHCONV=1   # Git Bash on Windows must not rewrite /workspace, /tmp, /opt into C:... paths
 cd "$(dirname "$0")/.."
 pass=0; fail=0; skip=0
 check() { local name="$1"; shift; if "$@" >/dev/null 2>&1; then echo "PASS  $name"; pass=$((pass+1)); else echo "FAIL  $name"; fail=$((fail+1)); fi; }

@@ -77,10 +77,12 @@ COPY env/r/ /opt/env/r/
 RUN Rscript /opt/env/r/install_packages.R \
     && Rscript -e 'library(arrow); library(duckdb); library(sf); library(targets); cat("R stack ok\n")'
 
-# --- Non-root user (uid 1000 'ubuntu' ships with noble) + Claude Code native install -------------------------------
+# --- Non-root user (rocker/r-ver removes noble default user: create uid/gid 1000 explicitly) + Claude Code ----------
 ARG CLAUDE_CODE_VERSION=2.1.301
 ENV HOME=/home/ubuntu
-RUN mkdir -p /workspace /home/ubuntu/.claude /home/ubuntu/.julia /home/ubuntu/.cache \
+RUN (getent group 1000 >/dev/null || groupadd -g 1000 ubuntu) \
+    && (id -u ubuntu >/dev/null 2>&1 || useradd -m -u 1000 -g 1000 -s /bin/bash ubuntu) \
+    && mkdir -p /workspace /home/ubuntu/.claude /home/ubuntu/.julia /home/ubuntu/.cache \
     && chown -R ubuntu:ubuntu /workspace /home/ubuntu
 USER ubuntu
 RUN curl -fsSL https://claude.ai/install.sh | bash -s ${CLAUDE_CODE_VERSION} \

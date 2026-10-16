@@ -5,3 +5,4 @@ DuckDB
 Distributions
 Turing
 RCall
+Suppressor   # required by JuliaCall's setup.jl
