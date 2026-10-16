@@ -10,6 +10,10 @@ Hasta la primera release con DOI (Zenodo), cita el repositorio:
 
 El archivo [`CITATION.cff`](https://github.com/tinkuy-qhali/tinkuy-qhali/blob/main/CITATION.cff) permite a GitHub y Zenodo generar la cita automáticamente (APA, BibTeX).
 
+::: {.callout-note title="Flujo de DOI verificado"}
+La integración GitHub → Zenodo quedó probada el 2026-10-16 en **Zenodo Sandbox** con la release `v0.0.1-sandbox` (DOI de prueba 10.5072/zenodo.621101). Los DOI con prefijo 10.5072 son de pruebas y **no deben citarse**; el primer DOI real se emitirá con la release de la Ronda 1.
+:::
+
 ## Datos derivados
 
 Cada mart y cada diccionario declara en su `manifest.json` la licencia efectiva, la fuente original (INEI, MEF, etc.) y los términos vigentes en la fecha de descarga. Cita **siempre la fuente original** además del derivado. Ejemplo (se completa en la Ronda 2):
