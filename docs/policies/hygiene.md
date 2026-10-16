@@ -45,7 +45,7 @@ R15. Los nombres de lo archivado cumplen las convenciones del informe 13: `kebab
 - Topes de `.git` (1 GB) y `docs/agent-log/` (5 MB); medir antes de fijarlos (informe 17; Fase 3).
 - Cadencia de `git gc` mensual; comandos de blobs grandes; `tmpclaude-*` sin fuente; que `worktree remove` conserve la rama (informe 17; Fase 2).
 - `dvc gc`, `uv cache prune`, `tar_destroy`, caché global de renv, `Pkg.gc()` y `docker system df`: sin lectura completa (informe 17; Fase 2).
-- Contradicción: archivo de bitácoras en `docs/agent-log/archivo/AAAA/` con `INDEX.md` y umbral de 90 días (informe 13) frente a `docs/agent-log/archive/AAAA-MM-DD.tar.gz` por fase cerrada (informe 17). Debe unificarse (carpeta `archivo/` en español, con `INDEX.md`; tar.gz opcional) antes de la Fase 3.
+- Resuelto por ADR 0013 (decisión 5): el archivo va a `docs/agent-log/archivo/AAAA/` **sin comprimir** (git ya comprime y un `.tar.gz` no es legible ni diffeable por el agente), con `docs/agent-log/archivo/INDEX.md`; disparador: cierre de fase con archivos de más de 90 días o carpeta > 5 MB (umbrales [provisional]).
 
 ## Fuentes
 - Informes docs/research/17, 13, `_17-anexo-politica.md`, `_13-anexo-convenciones.md`; ADR 0008; bitácoras de las Fases 0.6 y 1; `.gitignore`.

@@ -49,7 +49,7 @@ R15. `LESSONS.md` (raíz) tiene <= 100 líneas con entradas fechadas; el agente 
 - Sycofancia/anclaje sin fuente oficial; evaluación propia pendiente (informe 02).
 - Umbrales de 300 líneas, 90 días y 100 líneas; rotación en otros proyectos sin fuente; se ajustan tras la Fase 2 (informe 13).
 - Máximo de 3 iteraciones por subagente y límite de 12 líneas: sin fuente en los informes; se fijan en la Fase 3.
-- Contradicción abierta: `archivo/AAAA/` (informe 13) frente a `archive/AAAA-MM-DD.tar.gz` (informe 17); ver `hygiene.md`.
+- Resuelto por ADR 0013 (decisión 5): el archivo va a `docs/agent-log/archivo/AAAA/` **sin comprimir** (git ya comprime y un `.tar.gz` no es legible ni diffeable por el agente), con `docs/agent-log/archivo/INDEX.md`; disparador: cierre de fase con archivos de más de 90 días o carpeta > 5 MB (umbrales [provisional]).
 
 ## Fuentes
 - Informes docs/research/11, 02, 13 y `_13-anexo-convenciones.md`; ADR 0000 y 0008; bitácoras `docs/agent-log/2026-10-16-fase0-6-estado.md` y `2026-10-16-fase1-estado.md`.
