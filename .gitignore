@@ -1,6 +1,9 @@
 # --- machine-specific (regenerated on every bootstrap / SessionStart) ---
 machine-profile.json
 
+# --- test scratch (clean clones for tests/test_bootstrap.sh) ---
+.tq-tmp/
+
 # --- Claude Code residues ---
 .claude/worktrees/
 .claude/settings.local.json

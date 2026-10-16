@@ -42,7 +42,16 @@ if [ -f .dvc/config ] && grep -q "remote" .dvc/config; then
   check "dvc status clean against remote"             run dvc status -c
   POINTER=$(ls "${TQ_REGISTRY_DIR:-../tinkuy-qhali-registry}"/pointers/*.json 2>/dev/null | head -1 || true)
   check "first ENDES pointer exists in registry"      bash -c "test -n '$POINTER'"
-  check "dvc pull in clean clone recovers file + hash" bash -c 'tmp=$(mktemp -d) && git clone -q . "$tmp/c" && cp .dvc/config.local "$tmp/c/.dvc/" 2>/dev/null; docker compose run --rm -T -v "$tmp/c":/clean -w /clean pipeline bash -c "dvc pull -q && sha256sum -c raw/manifest.sha256"'
+  # Clean clone under the repo (Docker on Windows can only mount host paths; cygpath converts for it), with its OWN cache
+  # so the pull really goes to the remote, then every manifest.sha256 under raw/ is verified.
+  check "dvc pull in clean clone recovers file + hash" bash -c '
+    mkdir -p .tq-tmp && clone=$(mktemp -d "$PWD/.tq-tmp/clean.XXXXXX") &&
+    hostpath=$(command -v cygpath >/dev/null 2>&1 && cygpath -w "$clone" || echo "$clone") &&
+    git clone -q . "$hostpath" && cp .dvc/config.local "$clone/.dvc/" &&
+    docker compose run --rm -T -v "$hostpath":/clean -w /clean pipeline bash -c "
+      dvc config --local cache.dir /clean/.dvc/cache && dvc pull -q &&
+      for m in \$(find raw -name manifest.sha256); do (cd \$(dirname \$m) && sha256sum -c manifest.sha256) || exit 1; done;
+      rc=\$?; find /clean -mindepth 1 -delete; exit \$rc"'
 else
   skipif "DVC remote + first pull" "no DVC remote configured yet"
 fi
