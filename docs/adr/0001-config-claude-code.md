@@ -1,6 +1,6 @@
 # ADR 0001 — Configuración de Claude Code (nivel usuario, gitignore global, WSL)
 
-- **Estado:** aceptado (parcial: `.wslconfig` pendiente de aprobación explícita)
+- **Estado:** superseded por ADR 0008 (2026-10-16); estuvo aceptado desde 2026-10-16 con `.wslconfig` pendiente
 - **Fecha:** 2026-10-16
 - **Revisión programada:** Fase 1, ítem 1 (verificación contra documentación oficial)
 
