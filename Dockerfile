@@ -66,11 +66,7 @@ RUN if [ "${WITH_JULIA}" = "1" ]; then \
       && julia --version ; \
     fi
 COPY env/julia/ /opt/env/julia/
-RUN if [ "${WITH_JULIA}" = "1" ]; then \
-      julia --project=/opt/env/julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()' \
-      && cp /opt/env/julia/Manifest.toml /opt/env/julia/Manifest.toml.generated \
-      && chmod -R a+rX /opt/julia-depot /opt/juliaup ; \
-    fi
+RUN if [ "${WITH_JULIA}" = "1" ]; then       julia /opt/env/julia/setup.jl       && chmod -R a+rX /opt/julia-depot /opt/juliaup ;     fi
 
 # --- R packages: restore from env/r/renv.lock if present, else install the list from the pinned P3M snapshot --------
 # rocker/r-ver already sets CRAN to a dated p3m.dev snapshot with Ubuntu binaries, so installs are fast and reproducible.
