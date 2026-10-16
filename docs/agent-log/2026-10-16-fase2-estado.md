@@ -24,7 +24,9 @@ Hecho por el agente (reversible, sin tocar secretos):
 - `.dvc/config.local`: solo se renombró el encabezado de sección a `['remote "r2-restricted"']`; las credenciales no se leyeron ni se copiaron.
 - Verificación en el contenedor: `dvc remote list` muestra ambos remotes y `dvc status -c` contra `r2-restricted` sigue limpio para ENDES 1629.
 
-Pasos del usuario en https://dash.cloudflare.com → R2 Object Storage (una vez):
+**Ejecutado por el usuario el 2026-10-16.** Verificación desde el contenedor: `dvc remote list` muestra `r2-restricted` (default) y `r2-open`; `dvc status -c -r r2-restricted` en sincronía; `dvc status -c -r r2-open` responde con credenciales válidas y lista ENDES 1629 como `new` (no está en el bucket abierto, como debe ser). El token de solo lectura de CI quedó guardado fuera del repo (`~/.tinkuy-qhali/secrets/r2-ci-read.ini`, cifrado con EFS) y aún no está en GitHub. Riesgo residual anotado para la Fase 3: `dvc push -r r2-open` subiría ENDES si alguien lo invoca a mano; el test `tests/test_freeze_remotes.sh` (ADR 0014) debe cubrirlo.
+
+Pasos que siguió el usuario en https://dash.cloudflare.com → R2 Object Storage (referencia):
 1. **Crear el bucket abierto:** *Create bucket* → nombre `tinkuy-qhali-open`, ubicación automática. No activar *Public access* ni dominio personalizado todavía (se decide en la Fase 3 por fuente de nivel 1).
 2. **Confirmar que el bucket restringido no es público:** abrir `tinkuy-qhali-raw` → *Settings* → *Public access* debe estar **Disabled** y sin *Custom domains*. No se renombra (R2 no permite renombrar; el nombre del remote `r2-restricted` ya indica el nivel).
 3. **Token de escritura del usuario (máquina local):** *Manage R2 API Tokens* → el token actual (Object Read & Write sobre `tinkuy-qhali-raw`) sigue sirviendo para `r2-restricted`. Para poder hacer `dvc push` a `r2-open`, crear un segundo token *Object Read & Write* limitado a `tinkuy-qhali-open` **o** editar el actual para que cubra ambos buckets. Las claves van solo a `.dvc/config.local`, bajo la sección del remote correspondiente:
