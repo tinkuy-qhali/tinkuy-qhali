@@ -49,10 +49,10 @@
 
 | ADR | Qué cambia | Informe | Acción |
 |---|---|---|---|
-| 0001 | `ask` sí actúa en bypass; reglas PowerShell; sin sandbox en Windows | 01, 11, 18 | ADR 0008 (propuesto); diff pendiente de aprobación |
-| 0003 | Conceptos locales nunca son estándar en OHDSI; van en `source_concept_id`; jerarquías en `concept_relationship`; OMOP v5.4 para clínica | 03 | ADR 0009 en Fase 2 (no irreversible aún) |
-| 0004 | CC-BY-4.0 solo para derivados propios; bases derivadas de ODC-By siguen en ODC-By; de ENDES/ACLED solo salidas transformadas | 05, 06 | ADR 0010 en Fase 2 tras revisión legal |
-| 0007 / manifiesto ENDES | `terms_url` debe apuntar a la política ANDA; `freeze_level` = 3 confirmado; consentimiento INEI para subir a 2 | 05, 06 | corregir manifiesto en Fase 2; decisión del usuario sobre pedir consentimiento |
+| 0001 | `ask` sí actúa en bypass; reglas PowerShell; sin sandbox en Windows | 01, 11, 18 | ADR 0008 aceptado y aplicado el 2026-10-16 |
+| 0003 | Conceptos locales nunca son estándar en OHDSI; van en `source_concept_id`; jerarquías en `concept_relationship`; OMOP v5.4 para clínica | 03 | ADR 0009 (Fase 2, aceptado) |
+| 0004 | CC-BY-4.0 solo para derivados propios; bases derivadas de ODC-By siguen en ODC-By; de ENDES/ACLED solo salidas transformadas | 05, 06 | ADR 0010 (Fase 2, aceptado; revisión legal antes de la primera release) |
+| 0007 / manifiesto ENDES | `terms_url` apunta a la política ANDA; `freeze_level` = 3 confirmado | 05, 06 | manifiesto y puntero corregidos el 2026-10-16; el usuario decidió no pedir consentimiento por ahora |
 
 ## Las cinco preguntas de la Fase 1
 
@@ -68,8 +68,8 @@
 
 ## Decisiones que necesita el usuario antes de la Fase 2
 
-1. **ADR 0008 (a):** aprobar o rechazar el diff a `~/.claude/settings.json` (reglas PowerShell, `deny` de `curl`/`wget`, `idleCompaction: false`).
-2. **ENDES:** pedir consentimiento escrito al INEI (infoinei@inei.gob.pe) para un espejo restringido (nivel 2) o quedarse en nivel 3 (receta + hash, bytes solo en R2 privado). Afecta al manifiesto, a `LICENSE-DATA.md` y al plan de Zenodo.
+1. ~~ADR 0008 (a)~~ — aprobado y aplicado el 2026-10-16.
+2. ~~ENDES~~ — decidido el 2026-10-16: nivel 3 sin pedir consentimiento por ahora (ADR 0010).
 3. **Instalaciones tras cuarentena:** autorizar la cuarentena de `duckdb-skills`, `pointblank`, `cloudflare/skills` y `docker/skills` al abrir la Fase 2 (informe 12).
 
 ## Fuentes clave que sostienen las respuestas (consultadas 2026-10-16)
