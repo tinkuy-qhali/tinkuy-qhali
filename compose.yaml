@@ -1,0 +1,39 @@
+# tinkuy-qhali — one service, one image. Resource limits come from .env (written by start.sh/start.bat from
+# `docker info`, i.e. from the WSL2 VM already sized by %UserProfile%\.wslconfig via machine-profile.json). Never hardcode.
+name: tinkuy-qhali
+
+services:
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        WITH_JULIA: "${TQ_WITH_JULIA:-1}"
+    image: tinkuy-qhali:local
+    init: true
+    stdin_open: true
+    tty: true
+    working_dir: /workspace
+    cpus: ${TQ_CPUS:-2}
+    mem_limit: ${TQ_MEM:-4g}
+    environment:
+      TZ: America/Lima
+      TQ_IN_CONTAINER: "1"
+      # DVC credentials for Cloudflare R2 are read from .dvc/config.local (gitignored), never from here.
+    volumes:
+      - .:/workspace                               # code: bind mount (small, git-tracked)
+      - raw:/workspace/raw                         # raw bytes: named volume (fast, never in git)
+      - dvc-cache:/workspace/.dvc/cache
+      - targets-store:/workspace/_targets
+      - julia-user-depot:/home/ubuntu/.julia       # stacked on top of the read-only image depot
+      - uv-cache:/home/ubuntu/.cache
+      - claude-home:/home/ubuntu/.claude           # Claude Code login/config inside the container (one-time `claude login`)
+    command: ["bash"]
+
+volumes:
+  raw:
+  dvc-cache:
+  targets-store:
+  julia-user-depot:
+  uv-cache:
+  claude-home:

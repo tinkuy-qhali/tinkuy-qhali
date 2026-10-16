@@ -1,0 +1,8 @@
+# Normalize line endings: LF in the repo and in checkouts (scripts run inside a Linux container; Windows is the host).
+* text=auto eol=lf
+*.bat text eol=crlf
+*.png binary
+*.jpg binary
+*.pdf binary
+*.parquet binary
+*.zip binary

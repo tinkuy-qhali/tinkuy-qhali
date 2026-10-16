@@ -1,0 +1,51 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - MANIFESTO.md
+    - docs/site/*.qmd
+    - docs/adr/*.md
+    - docs/manual/*.md
+
+lang: es
+website:
+  title: "tinkuy-qhali"
+  description: "Ecosistema agéntico y reproducible de datos para investigación en salud (Perú)"
+  site-url: https://tinkuy-qhali.github.io/tinkuy-qhali/
+  repo-url: https://github.com/tinkuy-qhali/tinkuy-qhali
+  repo-actions: [edit, issue]
+  page-navigation: true
+  navbar:
+    left:
+      - href: index.qmd
+        text: Inicio
+      - href: MANIFESTO.md
+        text: Manifiesto
+      - href: docs/site/cite.qmd
+        text: Cómo citar
+      - href: docs/site/explorer.qmd
+        text: Explorador
+      - href: docs/site/reference.qmd
+        text: Referencia
+    right:
+      - icon: github
+        href: https://github.com/tinkuy-qhali
+  sidebar:
+    - title: Referencia
+      contents:
+        - docs/site/reference.qmd
+        - section: "Decisiones (ADR)"
+          contents: docs/adr/*.md
+        - section: "Manuales"
+          contents: docs/manual/*.md
+  page-footer:
+    left: "tinkuy-qhali · código MIT · derivados CC-BY-4.0 condicionada (ADR 0004)"
+    right: "Percy Soto-Becerra · UPN · DATAVIDENCE"
+
+format:
+  html:
+    theme: [cosmo]
+    toc: true
+    code-copy: true
+    smooth-scroll: true

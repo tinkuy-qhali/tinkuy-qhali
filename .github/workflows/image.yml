@@ -1,0 +1,46 @@
+# Builds the image and runs the in-container checks. Heavy (Julia precompile), so it runs on demand, weekly, and when
+# the environment definition changes — not on every PR. Records size and build time as job outputs for the benchmark.
+name: image
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * 1"   # Mondays 06:17 UTC
+  push:
+    branches: [main]
+    paths: ["Dockerfile", "env/**", "docker/**", "compose.yaml", ".github/workflows/image.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build (cached)
+        run: |
+          start=$(date +%s)
+          DOCKER_BUILDKIT=1 docker build --build-arg WITH_JULIA=1 -t tinkuy-qhali:local .
+          echo "build_seconds=$(( $(date +%s) - start ))" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "image_size_bytes=$(docker image inspect tinkuy-qhali:local --format '{{.Size}}')" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Lockfiles match the image (drift check)
+        run: |
+          set -e
+          docker run --rm tinkuy-qhali:local bash -c 'diff <(python - <<EOF
+          import json;print(json.dumps(json.load(open("/opt/env/r/renv.lock"))["Packages"],sort_keys=True))
+          EOF
+          ) <(python - <<EOF
+          import json;print(json.dumps(json.load(open("/opt/env/r/renv.lock.generated"))["Packages"],sort_keys=True))
+          EOF
+          )' || { echo "renv.lock drifted from installed library"; exit 1; }
+      - name: In-container smoke tests
+        run: |
+          set -e
+          docker run --rm tinkuy-qhali:local Rscript -e 'library(arrow); library(duckdb); library(sf); library(targets)'
+          docker run --rm tinkuy-qhali:local python -c "import duckdb, pyarrow, polars"
+          docker run --rm tinkuy-qhali:local julia --version
+          docker run --rm tinkuy-qhali:local Rscript -e 'JuliaCall::julia_setup(installJulia = FALSE); stopifnot(JuliaCall::julia_eval("1+1") == 2)'
+          docker run --rm tinkuy-qhali:local dvc --version
+          docker run --rm tinkuy-qhali:local quarto --version

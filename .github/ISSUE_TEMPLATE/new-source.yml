@@ -1,0 +1,27 @@
+name: Nueva fuente de datos
+description: Proponer una fuente (encuesta, registro, clima, eventos) para el ecosistema
+title: "[source] "
+labels: [source]
+body:
+  - type: input
+    id: name
+    attributes: { label: Nombre y productor, placeholder: "ENAHO — INEI" }
+    validations: { required: true }
+  - type: input
+    id: url
+    attributes: { label: URL de acceso y de términos de uso }
+    validations: { required: true }
+  - type: dropdown
+    id: freeze
+    attributes:
+      label: Nivel de congelamiento propuesto (matriz Fase 1, ítem 6)
+      options: ["Espejo público con DOI", "Espejo restringido con DOI", "Solo receta de descarga + hash", "No espejar (solo citar)", "No sé todavía"]
+    validations: { required: true }
+  - type: dropdown
+    id: scope
+    attributes:
+      label: ¿Capítulo o repo propio? (criterios ADR 0002)
+      options: ["Capítulo dentro de un repo existente", "Repo propio: licencia distinta", "Repo propio: ciclo de release distinto", "Repo propio: dominio distinto", "Repo propio: tamaño", "No sé todavía"]
+  - type: textarea
+    id: studies
+    attributes: { label: Estudios que la consumirían y variables clave }

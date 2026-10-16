@@ -1,0 +1,40 @@
+# Renders the Quarto site and deploys it to GitHub Pages (source: GitHub Actions). Why not pkgdown/Netlify: ADR 0006/0.6 —
+# the repo is not a pure R package and we do not need a custom domain yet; revisit when either changes.
+name: site
+on:
+  push:
+    branches: [main]
+    paths: ["_quarto.yml", "index.qmd", "MANIFESTO.md", "docs/**", ".github/workflows/site.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: "1.10.19"
+      - name: Render
+        run: quarto render
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

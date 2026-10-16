@@ -38,3 +38,7 @@ _site/
 .env
 .env.*
 *.pem
+
+/.quarto/
+**/*.quarto_ipynb
+_site/

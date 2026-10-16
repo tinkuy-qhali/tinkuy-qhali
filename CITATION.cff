@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "Si usas este software o sus derivados, cita este repositorio y la fuente original de cada dato."
+type: software
+title: "tinkuy-qhali: ecosistema agéntico de datos para investigación en salud (Perú)"
+version: 0.0.1
+date-released: 2026-10-16
+license: MIT
+repository-code: https://github.com/tinkuy-qhali/tinkuy-qhali
+url: https://tinkuy-qhali.github.io/tinkuy-qhali/
+keywords:
+  - health data
+  - Peru
+  - reproducible research
+  - common data model
+  - data provenance
+  - agentic workflows
+authors:
+  - family-names: Soto-Becerra
+    given-names: Percy
+    orcid: https://orcid.org/0000-0001-5332-9254
+    affiliation: "Universidad Privada del Norte; DATAVIDENCE SCIENTIFIC CONSULTING"

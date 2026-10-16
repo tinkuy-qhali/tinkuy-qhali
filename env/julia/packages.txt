@@ -1,0 +1,7 @@
+# Julia packages precompiled into the image (spec 0.6). RCall is required by JuliaCall::julia_setup().
+DataFrames
+Arrow
+DuckDB
+Distributions
+Turing
+RCall

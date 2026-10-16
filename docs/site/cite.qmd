@@ -1,0 +1,23 @@
+---
+title: "Cómo citar"
+---
+
+## Código
+
+Hasta la primera release con DOI (Zenodo), cita el repositorio:
+
+> Soto-Becerra, P. (2026). *tinkuy-qhali: ecosistema agéntico de datos para investigación en salud (Perú)* (versión 0.0.1) [Software]. Universidad Privada del Norte; DATAVIDENCE SCIENTIFIC CONSULTING. https://github.com/tinkuy-qhali/tinkuy-qhali
+
+El archivo [`CITATION.cff`](https://github.com/tinkuy-qhali/tinkuy-qhali/blob/main/CITATION.cff) permite a GitHub y Zenodo generar la cita automáticamente (APA, BibTeX).
+
+## Datos derivados
+
+Cada mart y cada diccionario declara en su `manifest.json` la licencia efectiva, la fuente original (INEI, MEF, etc.) y los términos vigentes en la fecha de descarga. Cita **siempre la fuente original** además del derivado. Ejemplo (se completa en la Ronda 2):
+
+> INEI. *Encuesta Demográfica y de Salud Familiar (ENDES) 2024*, módulo RECH0. Instituto Nacional de Estadística e Informática. Recuperado de https://proyectos.inei.gob.pe/microdatos/ el 2026-10-16. Harmonizado por tinkuy-qhali v0.x (DOI pendiente).
+
+## Identidad
+
+- Autor principal: Percy Soto-Becerra, ORCID [0000-0001-5332-9254](https://orcid.org/0000-0001-5332-9254)
+- Afiliaciones: Universidad Privada del Norte (UPN); DATAVIDENCE SCIENTIFIC CONSULTING
+- Licencias: código MIT; derivados CC-BY-4.0 condicionada al nivel de congelamiento de cada fuente ([ADR 0004](../adr/0004-licencias.md))

@@ -1,0 +1,15 @@
+---
+title: "Explorador de metadata"
+---
+
+::: {.callout-warning title="Placeholder"}
+El explorador interactivo (HTML autocontenido, buscable, regenerado desde `variable_registry` + `variable_usage` + diccionarios) se construye en la Fase 5. Hasta entonces, esta página documenta qué mostrará.
+:::
+
+| Vista | Fuente de datos | Qué permite |
+|---|---|---|
+| Variables harmonizadas | `tinkuy-qhali-cdm/variable_registry/*.yaml` | Buscar por nombre, dominio, concepto; ver definición, regla de derivación, fuentes y ediciones |
+| Procedencia | campo obligatorio de cada variable | DOI/URL o `study_id`, fecha, autor |
+| Usos causales | `variable_usage` | Rol de la variable en cada estudio, enlace al DAG |
+| Diccionarios | `dictionaries/<fuente>/<edición>.yaml` | Códigos, etiquetas, tipos, claves |
+| Punteros | `tinkuy-qhali-registry/pointers/*.json` | Dónde viven los bytes, hash, mirrors, nivel de congelamiento |

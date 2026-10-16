@@ -1,0 +1,36 @@
+---
+title: "tinkuy-qhali"
+subtitle: "Confluencia de datos para investigación en salud en el Perú, reproducible y extensible con agentes"
+---
+
+**tinkuy-qhali** (quechua: *tinkuy*, encuentro o confluencia de ríos; *qhali*, sano) es un ecosistema de datos para investigación en salud pública: una plantilla clonable, un modelo común de datos (`cdm`) con registro de variables y procedencia, y un registro de punteros a los bytes crudos resuelto por hash, de modo que cualquier persona pueda clonar, reproducir, citar, espejar y extender el trabajo, con o sin agentes.
+
+::: {.callout-note title="Estado: Ronda 1, Fase 0.6 (montaje)"}
+Este sitio se publicó el día del primer commit para que todo quede versionado desde el inicio. El contenido crece fase a fase; cada decisión irreversible tiene un ADR enlazado en la barra lateral.
+:::
+
+## Qué encontrarás
+
+- [Manifiesto](MANIFESTO.md): principios verificables, no declaraciones de intención.
+- [Cómo citar](docs/site/cite.qmd): identidad, DOI y formato de cita de código y datos.
+- [Explorador de metadata](docs/site/explorer.qmd): variables harmonizadas, procedencia y usos causales (en construcción).
+- [Referencia](docs/site/reference.qmd): arquitectura, capas de datos, repos del ecosistema y decisiones.
+
+## Repos del ecosistema
+
+| Repo | Rol |
+|---|---|
+| `tinkuy-qhali` | Plantilla (GitHub template), políticas, capa agéntica, este sitio |
+| `tinkuy-qhali-cdm` | Esquemas, vocabularios (formato OHDSI), registro de variables, validadores |
+| `tinkuy-qhali-registry` | Punteros a datos crudos (DOI, URL, SHA-256), `MIRRORS.md`, verificación |
+| `tinkuy-qhali-endes` | Primer repo por fuente (Ronda 2) |
+
+## Empezar
+
+```bash
+git clone https://github.com/tinkuy-qhali/tinkuy-qhali.git
+cd tinkuy-qhali
+./start.sh        # Windows: start.bat
+```
+
+Solo necesitas Docker Desktop, Git, `gh` y Claude Code; todo lo demás vive en la imagen. Ver `docs/manual/`.

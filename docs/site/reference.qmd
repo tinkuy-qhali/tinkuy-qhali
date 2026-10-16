@@ -1,0 +1,24 @@
+---
+title: "Referencia"
+---
+
+## Arquitectura (resumen; detalle en la Fase 2)
+
+Híbrido con capítulos ([ADR 0002](../adr/0002-arquitectura-hibrida.md)): tres repos núcleo, repos por fuente solo cuando cumplen criterios (licencia, ciclo de release, dominio, tamaño, equipo), estudios como capítulos.
+
+## Capas de datos
+
+| Capa | Contenido | En git |
+|---|---|---|
+| `raw/` | Espejo byte a byte + `manifest.json`; resuelto por hash desde el `registry` | No |
+| `standardized/` | Parquet por módulo, nombres originales, tipos y etiquetas explícitos; idempotente | No |
+| `harmonized/` | CDM por capas: entidades mínimas + `observation` larga con `concept_id`; pesos, estratos y PSU de primera clase ([ADR 0003](../adr/0003-modelo-datos-cdm-capas.md)) | No |
+| `marts/` | `dismodlite/`, `spatial/`, `impact/`, `prediction/` | No |
+
+## Contenedor
+
+Una imagen ([ADR 0006](../adr/0006-imagen-base.md)): R 4.6.0 (rocker), Python 3.13 (`uv`), Julia 1.13 (`juliaup`), DuckDB, arrow, sf/terra, `targets`, DVC, Quarto, Claude Code. Tres lockfiles verificados en CI. `start.sh`/`start.bat` para entrar; `run.sh`/`run.bat` (Fase 3) para el pipeline a un clic.
+
+## Decisiones
+
+Todas las decisiones irreversibles están en la sección **Decisiones (ADR)** de la barra lateral, con estado, fecha y fuentes.

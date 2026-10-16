@@ -1,0 +1,15 @@
+name: Error o validador en rojo
+description: Algo falla (pipeline, validador, hook, bootstrap, sitio)
+title: "[bug] "
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: Qué falla y cómo reproducirlo (comando exacto dentro del contenedor) }
+    validations: { required: true }
+  - type: textarea
+    id: output
+    attributes: { label: Salida completa del error, render: shell }
+  - type: input
+    id: versions
+    attributes: { label: Versión de la imagen / commit, placeholder: "tinkuy-qhali:local @ abc1234" }

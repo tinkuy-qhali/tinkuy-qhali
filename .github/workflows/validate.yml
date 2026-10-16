@@ -1,0 +1,38 @@
+# Fast validators on every PR (no image build). Why: the spec requires executable acceptance criteria per phase and
+# CHANGELOG/ADR discipline; this job enforces the cheap, deterministic part. Image build/tests run in image.yml.
+name: validate
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: ADR format (Estado + Fecha in every ADR)
+        run: |
+          set -e
+          for f in docs/adr/*.md; do
+            grep -q '^- \*\*Estado:\*\*' "$f" || { echo "missing Estado: $f"; exit 1; }
+            grep -q '^- \*\*Fecha:\*\*'  "$f" || { echo "missing Fecha: $f";  exit 1; }
+          done
+      - name: compose file is valid
+        run: docker compose config --quiet
+      - name: shell scripts parse
+        run: |
+          bash -n start.sh tests/*.sh docker/entrypoint.sh
+      - name: profile_machine.py runs on a clean runner
+        run: python tools/profile_machine.py --quiet --out /tmp/mp.json && python -c "import json; json.load(open('/tmp/mp.json'))"
+      - name: no raw data or secrets tracked
+        run: |
+          set -e
+          git ls-files | grep -E '^(raw|standardized|harmonized|marts)/' && { echo "data layer tracked in git"; exit 1; } || true
+          git ls-files | grep -E '(\.dvc/config\.local|\.env$|\.pem$)' && { echo "secret file tracked"; exit 1; } || true

@@ -1,0 +1,19 @@
+# Placeholder for the periodic mirror verification (spec Fase 2/3: MIRRORS.md + checksums). The real verifier lives in
+# tinkuy-qhali-registry (tools/verify_mirrors.py) and is wired here once the registry publishes its first pointer.
+name: mirrors-verify
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 7 1 * *"   # monthly
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify declared mirrors (placeholder until registry v0.1)
+        run: |
+          echo "No mirrors declared yet. See tinkuy-qhali-registry/MIRRORS.md."

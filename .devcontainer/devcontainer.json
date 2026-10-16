@@ -1,0 +1,14 @@
+{
+  "name": "tinkuy-qhali",
+  "dockerComposeFile": ["../compose.yaml"],
+  "service": "pipeline",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "ubuntu",
+  "overrideCommand": true,
+  "postStartCommand": "python tools/profile_machine.py --quiet --out machine-profile.json",
+  "customizations": {
+    "vscode": {
+      "extensions": ["REditorSupport.r", "quarto.quarto", "julialang.language-julia", "ms-python.python", "anthropic.claude-code"]
+    }
+  }
+}

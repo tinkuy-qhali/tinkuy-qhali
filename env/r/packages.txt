@@ -1,0 +1,51 @@
+# Curated R packages baked into the image (one per line; '#' comments). Why each group exists is in ADR 0006.
+# --- storage & query (Parquet is the contract between languages; DuckDB does joins/aggregations) ---
+arrow
+duckdb
+DBI
+dbplyr
+# --- wrangling (tidyverse core, no meta-package to keep the image lean) ---
+dplyr
+tidyr
+purrr
+readr
+stringr
+tibble
+ggplot2
+glue
+cli
+fs
+here
+withr
+jsonlite
+yaml
+digest
+# --- survey microdata (ENDES/ENAHO ship as SPSS/Stata with labels; complex design is first-class) ---
+haven
+labelled
+survey
+srvyr
+# --- spatial ---
+sf
+terra
+# --- pipeline orchestration & environments ---
+targets
+tarchetypes
+crew
+renv
+# --- language bridges (small interactive calls only; heavy work goes through Parquet) ---
+JuliaCall
+reticulate
+Rcpp
+# --- validation, style, tests, docs ---
+pointblank
+lintr
+styler
+testthat
+roxygen2
+knitr
+rmarkdown
+quarto
+# --- measurement ---
+bench
+profmem

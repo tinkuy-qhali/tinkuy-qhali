@@ -1,0 +1,23 @@
+name: Nueva variable harmonizada
+description: Proponer una variable para variable_registry (procedencia obligatoria)
+title: "[variable] "
+labels: [cdm]
+body:
+  - type: input
+    id: name
+    attributes: { label: Nombre harmonizado propuesto, placeholder: "anemia_child_6_59m" }
+    validations: { required: true }
+  - type: textarea
+    id: definition
+    attributes: { label: Definición en lenguaje natural y regla de derivación }
+    validations: { required: true }
+  - type: input
+    id: provenance
+    attributes: { label: Procedencia (DOI/URL o study_id, fecha, autor) }
+    validations: { required: true }
+  - type: input
+    id: sources
+    attributes: { label: Fuentes y ediciones donde existe, placeholder: "ENDES 2019–2024, módulo RECH6" }
+  - type: input
+    id: concept
+    attributes: { label: concept_id propuesto (local ≥ 2000000000 o estándar con licencia) }
