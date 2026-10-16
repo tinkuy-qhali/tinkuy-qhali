@@ -27,6 +27,12 @@ missing <- setdiff(
 )
 if (length(missing)) stop("packages failed to install: ", paste(missing, collapse = ", "))
 
+# Every curated package must actually load (catches binaries linked against missing system libraries, e.g. fs -> libuv).
+pkgs_all <- { p <- readLines(file.path(here, "packages.txt"), warn = FALSE); p <- trimws(sub("#.*$", "", p)); p[nzchar(p)] }
+bad <- Filter(function(p) !suppressWarnings(suppressPackageStartupMessages(requireNamespace(p, lib.loc = lib, quietly = TRUE))), pkgs_all)
+if (length(bad)) stop("packages installed but failed to load: ", paste(bad, collapse = ", "))
+message(">> all ", length(pkgs_all), " curated packages load")
+
 # Always emit a fresh snapshot so the maintainer can diff it against the committed lockfile.
 renv::snapshot(project = here, library = lib, lockfile = file.path(here, "renv.lock.generated"),
                type = "all", prompt = FALSE, force = TRUE)

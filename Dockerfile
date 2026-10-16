@@ -73,6 +73,8 @@ RUN if [ "${WITH_JULIA}" = "1" ]; then       julia /opt/env/julia/setup.jl      
 ENV RENV_PATHS_LIBRARY=/usr/local/lib/R/site-library \
     RENV_CONFIG_AUTOLOADER_ENABLED=FALSE \
     RENV_PATHS_CACHE=/opt/renv-cache
+# Runtime libs that P3M binaries link against but the base image lacks (fs -> libuv). Separate layer keeps caches above.
+RUN apt-get update && apt-get install -y --no-install-recommends libuv1 && rm -rf /var/lib/apt/lists/*
 COPY env/r/ /opt/env/r/
 RUN Rscript /opt/env/r/install_packages.R \
     && Rscript -e 'library(arrow); library(duckdb); library(sf); library(targets); cat("R stack ok\n")'
