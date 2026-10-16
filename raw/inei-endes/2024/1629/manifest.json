@@ -8,9 +8,9 @@
   "size_bytes": 5184994,
   "retrieved_at": "2026-10-16T06:14:00+00:00",
   "origin_url": "https://proyectos.inei.gob.pe/iinei/srienaho/descarga/SPSS/968-Modulo1629.zip",
-  "terms_url": "https://proyectos.inei.gob.pe/microdatos/",
+  "terms_url": "http://webinei.inei.gob.pe/anda_inei/index.php/catalog/817/accesspolicy",
   "freeze_level": "recipe-and-hash",
-  "freeze_level_status": "provisional",
-  "license_note": "INEI publica los microdatos de ENDES en su portal sin un texto de licencia explicito en la pagina de descarga; aplican la Ley 27806 (transparencia) y el DS 016-2017-PCM (datos abiertos). Nivel provisional recipe-and-hash hasta el informe de la Fase 1, item 5.",
+  "freeze_level_status": "confirmed",
+  "license_note": "Politica de acceso de ENDES 2024 en el catalogo ANDA del INEI (consultada 2026-10-16): cita obligatoria de la fuente, prohibida la comercializacion y prohibida la copia a soportes electronicos de acceso multiusuario sin consentimiento escrito del INEI. Por ello el nivel es recipe-and-hash (nivel 3, confirmado por decision del usuario el 2026-10-16): el registry publica receta y sha256, los bytes viven solo en el remote DVC privado (R2) y se publican unicamente salidas transformadas con cita. Ascenso a restricted-mirror-doi (nivel 2) solo con consentimiento escrito del INEI. Fuentes: docs/research/05-licencias-derecho-preservacion.md y 06-criterios-de-congelamiento.md.",
   "never_edit": "raw/ is a byte-for-byte mirror; derived layers live in standardized/ and beyond"
 }

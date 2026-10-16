@@ -19,7 +19,7 @@ Volcado de estado para continuidad entre sesiones (política de contexto: por fa
 
 ## Pendiente para el usuario (decisiones)
 1. ~~Aprobar el diff (a) del ADR 0008~~ — aprobado y aplicado el 2026-10-16 (respaldo `.bak-20261016-adr0008`; `curl` denegado en la prueba).
-2. ENDES: pedir consentimiento escrito al INEI (nivel 2) o quedarse en nivel 3.
+2. ~~ENDES: pedir consentimiento o quedarse en nivel 3~~ — decidido el 2026-10-16: **nivel 3 (receta + hash)**, sin pedir consentimiento por ahora; el ADR 0010 deja previsto el ascenso a nivel 2 si se solicita más adelante.
 3. Autorizar la cuarentena de `duckdb-skills`, `pointblank`, `cloudflare/skills`, `docker/skills` al abrir la Fase 2.
 4. Borrar el volumen huérfano `tinkuy-qhali_raw` (pendiente desde 0.6; regla `deny`).
 
