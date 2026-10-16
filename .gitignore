@@ -50,3 +50,6 @@ _site/
 /.quarto/
 **/*.quarto_ipynb
 _site/
+
+# --- benchmark scratch (item 22) ---
+benchmarks/.cache/
