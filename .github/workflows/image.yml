@@ -26,15 +26,7 @@ jobs:
           echo "build_seconds=$(( $(date +%s) - start ))" | tee -a "$GITHUB_STEP_SUMMARY"
           echo "image_size_bytes=$(docker image inspect tinkuy-qhali:local --format '{{.Size}}')" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Lockfiles match the image (drift check)
-        run: |
-          set -e
-          docker run --rm tinkuy-qhali:local bash -c 'diff <(python - <<EOF
-          import json;print(json.dumps(json.load(open("/opt/env/r/renv.lock"))["Packages"],sort_keys=True))
-          EOF
-          ) <(python - <<EOF
-          import json;print(json.dumps(json.load(open("/opt/env/r/renv.lock.generated"))["Packages"],sort_keys=True))
-          EOF
-          )' || { echo "renv.lock drifted from installed library"; exit 1; }
+        run: docker run --rm -v "$PWD/tools:/tools:ro" tinkuy-qhali:local python /tools/check_renv_drift.py
       - name: In-container smoke tests
         run: |
           set -e

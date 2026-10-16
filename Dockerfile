@@ -89,7 +89,9 @@ ENV HOME=/home/ubuntu
 RUN (getent group 1000 >/dev/null || groupadd -g 1000 ubuntu) \
     && (id -u ubuntu >/dev/null 2>&1 || useradd -m -u 1000 -g 1000 -s /bin/bash ubuntu) \
     && mkdir -p /workspace /home/ubuntu/.claude /home/ubuntu/.julia /home/ubuntu/.cache \
-    && chown -R ubuntu:ubuntu /workspace /home/ubuntu
+    && chown -R ubuntu:ubuntu /workspace /home/ubuntu \
+    # The repo is a bind mount owned by the host user; git CLI and libgit2 (used by DVC) refuse it unless marked safe.
+    && git config --system --add safe.directory /workspace
 USER ubuntu
 RUN curl -fsSL https://claude.ai/install.sh | bash -s ${CLAUDE_CODE_VERSION} \
     && /home/ubuntu/.local/bin/claude --version

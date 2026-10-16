@@ -8,10 +8,10 @@ TQ_USER="${TQ_USER:-ubuntu}"
 TQ_UID="$(id -u "$TQ_USER")"
 TQ_GID="$(id -g "$TQ_USER")"
 
-for d in /workspace/raw /workspace/.dvc/cache /workspace/_targets \
+for d in /dvc-cache /workspace/raw /workspace/_targets \
          /home/ubuntu/.julia /home/ubuntu/.cache /home/ubuntu/.claude /home/ubuntu/.local; do
   if [ -d "$d" ] && [ "$(stat -c %u "$d")" != "$TQ_UID" ]; then
-    chown "$TQ_UID:$TQ_GID" "$d" 2>/dev/null || true
+    chown "$TQ_UID:$TQ_GID" "$d" 2>/dev/null || chmod a+rwx "$d" 2>/dev/null || true
   fi
 done
 

@@ -19,11 +19,15 @@ services:
     environment:
       TZ: America/Lima
       TQ_IN_CONTAINER: "1"
+      # The bind-mounted repo is owned by the host user; without this, git (and DVC, which calls git) refuses to run.
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: safe.directory
+      GIT_CONFIG_VALUE_0: /workspace
       # DVC credentials for Cloudflare R2 are read from .dvc/config.local (gitignored), never from here.
     volumes:
       - .:/workspace                               # code: bind mount (small, git-tracked)
       - raw:/workspace/raw                         # raw bytes: named volume (fast, never in git)
-      - dvc-cache:/workspace/.dvc/cache
+      - dvc-cache:/dvc-cache                       # DVC cache outside the repo (dvc init refuses a pre-existing .dvc/)
       - targets-store:/workspace/_targets
       - julia-user-depot:/home/ubuntu/.julia       # stacked on top of the read-only image depot
       - uv-cache:/home/ubuntu/.cache
