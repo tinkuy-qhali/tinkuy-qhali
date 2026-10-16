@@ -1,0 +1,40 @@
+# --- machine-specific (regenerated on every bootstrap / SessionStart) ---
+machine-profile.json
+
+# --- Claude Code residues ---
+.claude/worktrees/
+.claude/settings.local.json
+tmpclaude-*
+
+# --- data layers never enter git (resolved by hash from tinkuy-qhali-registry) ---
+raw/
+standardized/
+harmonized/
+marts/
+quarantine/
+*.parquet
+*.duckdb
+*.duckdb.wal
+
+# --- caches & environments ---
+.Rproj.user/
+.Rhistory
+.RData
+renv/library/
+renv/staging/
+renv/local/
+.venv/
+__pycache__/
+*.pyc
+_targets/
+.dvc/cache/
+.dvc/tmp/
+.dvc/config.local
+.quarto/
+_site/
+/site_libs/
+
+# --- secrets ---
+.env
+.env.*
+*.pem
