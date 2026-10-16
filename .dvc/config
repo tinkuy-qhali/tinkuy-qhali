@@ -1,10 +1,14 @@
 [core]
     no_scm = True
-    remote = r2
+    remote = r2-restricted
 [cache]
     dir = /dvc-cache
     type = "reflink,hardlink,copy"
-['remote "r2"']
+['remote "r2-restricted"']
     url = s3://tinkuy-qhali-raw
+    region = auto
+    endpointurl = https://5cd9171e5332beff49a1752f57985f6a.r2.cloudflarestorage.com
+['remote "r2-open"']
+    url = s3://tinkuy-qhali-open
     region = auto
     endpointurl = https://5cd9171e5332beff49a1752f57985f6a.r2.cloudflarestorage.com

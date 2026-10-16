@@ -17,8 +17,33 @@ Volcado de estado para continuidad entre sesiones (política de contexto: por fa
 - Reprogramado a Fase 3 (M18): render de Mermaid en Quarto/GitHub, variable ENDES real para procedencia, revisión legal, código de salida de `tar_make()`.
 - `tools/check_adr.py` endurecido (15 casos de test; CI lo ejecuta) y paso de CI contra archivos de datos y blobs > 5 MB.
 
+## Pasos R2 (ADR 0014), estado al 2026-10-16
+
+Hecho por el agente (reversible, sin tocar secretos):
+- `.dvc/config`: el remote `r2` pasa a llamarse `r2-restricted` (mismo bucket `tinkuy-qhali-raw`, que contiene ENDES, nivel 3) y queda como remote por defecto; se añade `r2-open` → `s3://tinkuy-qhali-open` (niveles 1–2, aún sin bucket).
+- `.dvc/config.local`: solo se renombró el encabezado de sección a `['remote "r2-restricted"']`; las credenciales no se leyeron ni se copiaron.
+- Verificación en el contenedor: `dvc remote list` muestra ambos remotes y `dvc status -c` contra `r2-restricted` sigue limpio para ENDES 1629.
+
+Pasos del usuario en https://dash.cloudflare.com → R2 Object Storage (una vez):
+1. **Crear el bucket abierto:** *Create bucket* → nombre `tinkuy-qhali-open`, ubicación automática. No activar *Public access* ni dominio personalizado todavía (se decide en la Fase 3 por fuente de nivel 1).
+2. **Confirmar que el bucket restringido no es público:** abrir `tinkuy-qhali-raw` → *Settings* → *Public access* debe estar **Disabled** y sin *Custom domains*. No se renombra (R2 no permite renombrar; el nombre del remote `r2-restricted` ya indica el nivel).
+3. **Token de escritura del usuario (máquina local):** *Manage R2 API Tokens* → el token actual (Object Read & Write sobre `tinkuy-qhali-raw`) sigue sirviendo para `r2-restricted`. Para poder hacer `dvc push` a `r2-open`, crear un segundo token *Object Read & Write* limitado a `tinkuy-qhali-open` **o** editar el actual para que cubra ambos buckets. Las claves van solo a `.dvc/config.local`, bajo la sección del remote correspondiente:
+   ```ini
+   ['remote "r2-open"']
+       access_key_id = <ACCESS_KEY_ID_OPEN>
+       secret_access_key = <SECRET_ACCESS_KEY_OPEN>
+   ```
+4. **Token de solo lectura para CI y mirrors:** crear `tinkuy-qhali-ci-read` con permiso **Object Read only**, limitado **únicamente** a `tinkuy-qhali-open`. Guardarlo como secretos del repo (`R2_OPEN_ACCESS_KEY_ID`, `R2_OPEN_SECRET_ACCESS_KEY`) **solo cuando la Fase 3 implemente `verify_mirrors.py`**; hasta entonces no se usa. Nunca crear un token de lectura sobre `tinkuy-qhali-raw` para terceros.
+5. **Verificar desde el repo** (Git Bash, en `C:/pe-health-data-commons`):
+   ```bash
+   MSYS_NO_PATHCONV=1 docker compose run --rm -T pipeline bash -c "dvc remote list && dvc status -c -r r2-restricted"
+   ```
+   Debe listar `r2-restricted` y `r2-open` y terminar con `Cache and remote 'r2-restricted' are in sync.` Cuando exista `r2-open` con credenciales, `dvc status -c -r r2-open` debe decir que no hay archivos (aún no se ha subido nada de nivel 1–2).
+
+Qué NO hacer: activar acceso público en `tinkuy-qhali-raw`; compartir el token de ese bucket; ejecutar `dvc gc` (está en `deny`).
+
 ## Pendiente para el usuario
-0. **Aprobar el ADR 0014** (aislamiento de nivel 3 en R2: crear `tinkuy-qhali-open`, token de solo lectura para CI limitado a él, renombrar el bucket actual como `r2-restricted`).
+0. ~~Aprobar el ADR 0014~~ — aprobado el 2026-10-16; queda ejecutar en Cloudflare R2 los pasos de la sección "Pasos R2 (ADR 0014)" de esta bitácora.
 1. Autorizar la cuarentena de `duckdb-skills`, `pointblank`, `cloudflare/skills` y `docker/skills` al abrir la Fase 3 (informe 12).
 2. Revisión legal humana antes de la primera release pública (ADR 0010: compatibilidad CC-BY/ODC-By, términos no localizados).
 3. Borrar el volumen huérfano `tinkuy-qhali_raw` (regla `deny`; pendiente desde 0.6).

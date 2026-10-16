@@ -1,6 +1,6 @@
 # ADR 0014 — Aislamiento de los bytes de nivel 3 en R2 y modelo de credenciales
 
-- **Estado:** propuesto (requiere aprobación del usuario porque reorganiza el bucket y los tokens de R2; hasta entonces rige la regla transitoria de la decisión 6)
+- **Estado:** aceptado (aprobado por el usuario el 2026-10-16; la reorganización del bucket y de los tokens la ejecuta el usuario siguiendo los pasos de la bitácora de la Fase 2; la regla transitoria de la decisión 6 rige hasta que `dvc remote list` muestre `r2-open` y `r2-restricted`)
 - **Fecha:** 2026-10-16
 - **Complementa:** ADR 0007 (remote DVC en R2) y ADR 0010 (niveles de congelamiento)
 - **Origen:** hallazgo crítico C1 de `docs/reviews/f2-adversarial.md`
