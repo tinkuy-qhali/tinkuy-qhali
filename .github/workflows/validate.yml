@@ -32,7 +32,14 @@ jobs:
       - name: profile_machine.py runs on a clean runner
         run: python tools/profile_machine.py --quiet --out /tmp/mp.json && python -c "import json; json.load(open('/tmp/mp.json'))"
       - name: no raw data or secrets tracked
+        # ADR 0006 (corrección): raw/ is a bind mount, so its DVC pointers (*.dvc) and manifests (manifest.json,
+        # manifest.sha256) ARE tracked; the bytes never are. Other data layers never enter git.
         run: |
           set -e
-          git ls-files | grep -E '^(raw|standardized|harmonized|marts)/' && { echo "data layer tracked in git"; exit 1; } || true
+          git ls-files | grep -E '^raw/' | grep -vE '(\.dvc|manifest\.json|manifest\.sha256)$' && { echo "raw bytes tracked in git"; exit 1; } || true
+          git ls-files | grep -E '^(standardized|harmonized|marts)/' && { echo "data layer tracked in git"; exit 1; } || true
           git ls-files | grep -E '(\.dvc/config\.local|\.env$|\.pem$)' && { echo "secret file tracked"; exit 1; } || true
+      - name: Phase 1 research reports validate (tools/check_research.py)
+        run: |
+          bash tests/test_check_research.sh
+          python tools/check_research.py
