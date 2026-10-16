@@ -1,6 +1,6 @@
 # ADR 0008 — Revisión de la configuración de Claude Code (supersede al ADR 0001)
 
-- **Estado:** propuesto (pendiente de aprobación del usuario; parte (b) ya aplicada por ser reversible y de alcance proyecto)
+- **Estado:** aceptado (parte (a) aprobada por el usuario y aplicada el 2026-10-16 con respaldo `~/.claude/settings.json.bak-20261016-adr0008`; parte (b) aplicada el mismo día; parte (c) programada para la Fase 3)
 - **Fecha:** 2026-10-16
 - **Supersede:** ADR 0001
 - **Fuente:** Fase 1, ítem 1 (`docs/research/01-anthropic-repos-agenticos.md`, anexo `docs/research/_01-anexo-config.md`), ítem 11 e ítem 18.
@@ -24,9 +24,9 @@ Lo demás del ADR 0001 (`effortLevel` y sus valores, sintaxis `:*`, `deny` bloqu
 
 ## Decisión
 
-### (a) `~/.claude/settings.json` (usuario) — PENDIENTE DE APROBACIÓN
+### (a) `~/.claude/settings.json` (usuario) — APLICADO el 2026-10-16
 
-Se aplica solo tras mostrar el diff y recibir aprobación explícita, con respaldo previo (`settings.json.bak-<fecha>`), como en la Fase 0.
+Aprobado por el usuario tras ver el diff; respaldo en `settings.json.bak-20261016-adr0008`. Resultado: 23 reglas `deny`, 14 `ask`, `idleCompaction: false`; `allow` y `defaultMode: bypassPermissions` conservados. Test ejecutado: `curl -sI https://example.com` desde la herramienta Bash fue denegado en la misma sesión.
 
 ```diff
    "permissions": {
