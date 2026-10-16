@@ -25,7 +25,7 @@ La especificación (Fase 0.6) exige una sola imagen, capas cacheables, sin herra
 6. **Usuario no root** `ubuntu` (uid 1000, creado explícitamente porque rocker/r-ver no trae el usuario por defecto de noble); `docker/entrypoint.sh` arranca como root solo para dar permisos a los volúmenes nombrados y baja privilegios con `setpriv`.
 7. **Claude Code** instalado en la imagen con el instalador nativo, versión fijada 2.1.301; configuración y login en el volumen `claude-home` (un `claude login` la primera vez).
 8. **Límites de recursos**: `.wslconfig` (24 GB, 7 CPU) derivado de `machine-profile.json` fija el techo de la VM; `start.sh`/`start.bat` leen `docker info` y escriben `.env` (`TQ_CPUS`, `TQ_MEM`) para `compose.yaml`. Nada hardcodeado; el host solo necesita Docker, Git, gh y Claude Code.
-9. **Volúmenes nombrados** (fuera de NTFS): `raw`, `dvc-cache`, `targets-store`, `julia-user-depot`, `uv-cache`, `claude-home`. El código es un bind-mount porque es pequeño y va en git.
+9. **Volúmenes nombrados** (fuera de NTFS): `dvc-cache` (montado en `/dvc-cache`), `targets-store`, `julia-user-depot`, `uv-cache`, `claude-home`. El código es un bind-mount porque es pequeño y va en git. **Corrección 2026-10-16:** `raw/` ya no es volumen: sus archivos `.dvc` y manifiestos deben ser visibles para git en el host; los bytes se escriben una vez y la deduplicación rápida la hace la caché DVC en el volumen. Dónde viven `standardized/`, `harmonized/` y `marts/` (I/O intensivo) se decide en la Fase 2 con el benchmark.
 
 ## Consecuencias
 
