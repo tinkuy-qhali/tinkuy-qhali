@@ -15,9 +15,10 @@ ORIGIN="https://proyectos.inei.gob.pe/iinei/srienaho/descarga/SPSS/${FILE}"
 REGISTRY_DIR="${TQ_REGISTRY_DIR:-/tmp/registry}"
 
 echo "== dvc init + remote"
-[ -f .dvc/config ] || dvc init -q
+# --no-scm: DVC's embedded libgit2 cannot rename objects on Windows bind mounts; git is driven by the CLI instead
+# (ADR 0007 addendum). .dvc files and .gitignore entries are committed explicitly.
+[ -f .dvc/config ] || dvc init -q --no-scm
 dvc cache dir /dvc-cache            # named volume (fast, outside NTFS); container path, same for every user of the image
-dvc config core.autostage true
 dvc config cache.type "reflink,hardlink,copy"
 dvc remote add -d -f r2 "s3://${BUCKET}"
 dvc remote modify r2 region auto
@@ -32,6 +33,10 @@ fi
 ls -l "$DIR/$FILE"
 unzip -l "$DIR/$FILE" | tail -n 8
 
+echo "== dvc add"
+dvc add -q "$DIR/$FILE"
+cat "$DIR/$FILE.dvc"
+
 echo "== manifest + pointer"
 mkdir -p "$REGISTRY_DIR"
 python tools/make_manifest.py --source "$SOURCE" --edition "$EDITION" --module "$MODULE" \
@@ -40,9 +45,5 @@ python tools/make_manifest.py --source "$SOURCE" --edition "$EDITION" --module "
   --license-note "INEI publica los microdatos de ENDES en su portal sin un texto de licencia explicito en la pagina de descarga; aplican la Ley 27806 (transparencia) y el DS 016-2017-PCM (datos abiertos). Nivel provisional recipe-and-hash hasta el informe de la Fase 1, item 5." \
   --dvc-file "$DIR/$FILE.dvc" --registry-dir "$REGISTRY_DIR"
 ( cd "$DIR" && sha256sum -c manifest.sha256 )
-
-echo "== dvc add"
-dvc add "$DIR/$FILE"
-cat "$DIR/$FILE.dvc"
 echo "=====POINTER====="
 cat "$REGISTRY_DIR/pointers/${SOURCE}-${EDITION}-${MODULE}.json"

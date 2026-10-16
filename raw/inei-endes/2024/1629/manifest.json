@@ -1,0 +1,16 @@
+{
+  "pointer_id": "inei-endes-2024-1629",
+  "source": "inei-endes",
+  "edition": "2024",
+  "module": "1629",
+  "filename": "968-Modulo1629.zip",
+  "sha256": "1a76f981952668004660b346e7b0cd2cf4c41291a27a38e2e73046884e17c799",
+  "size_bytes": 5184994,
+  "retrieved_at": "2026-10-16T06:14:00+00:00",
+  "origin_url": "https://proyectos.inei.gob.pe/iinei/srienaho/descarga/SPSS/968-Modulo1629.zip",
+  "terms_url": "https://proyectos.inei.gob.pe/microdatos/",
+  "freeze_level": "recipe-and-hash",
+  "freeze_level_status": "provisional",
+  "license_note": "INEI publica los microdatos de ENDES en su portal sin un texto de licencia explicito en la pagina de descarga; aplican la Ley 27806 (transparencia) y el DS 016-2017-PCM (datos abiertos). Nivel provisional recipe-and-hash hasta el informe de la Fase 1, item 5.",
+  "never_edit": "raw/ is a byte-for-byte mirror; derived layers live in standardized/ and beyond"
+}

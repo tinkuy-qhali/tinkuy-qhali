@@ -25,8 +25,9 @@ services:
       GIT_CONFIG_VALUE_0: /workspace
       # DVC credentials for Cloudflare R2 are read from .dvc/config.local (gitignored), never from here.
     volumes:
-      - .:/workspace                               # code: bind mount (small, git-tracked)
-      - raw:/workspace/raw                         # raw bytes: named volume (fast, never in git)
+      - .:/workspace                               # code + raw/ pointers: bind mount. raw/ bytes are gitignored but their
+                                                   # .dvc files and manifests must be visible to git on the host, so raw/
+                                                   # is NOT a named volume; the DVC cache (dedup, fast) is.
       - dvc-cache:/dvc-cache                       # DVC cache outside the repo (dvc init refuses a pre-existing .dvc/)
       - targets-store:/workspace/_targets
       - julia-user-depot:/home/ubuntu/.julia       # stacked on top of the read-only image depot
@@ -35,7 +36,6 @@ services:
     command: ["bash"]
 
 volumes:
-  raw:
   dvc-cache:
   targets-store:
   julia-user-depot:

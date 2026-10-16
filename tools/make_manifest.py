@@ -75,12 +75,22 @@ def main() -> int:
                                         "freeze_level_status", "license_note")}
     if "terms_snapshot_sha256" in manifest:
         pointer["terms_snapshot_sha256"] = manifest["terms_snapshot_sha256"]
-    pointer["locations"] = [
-        {"kind": "origin", "uri": a.origin_url},
-        {"kind": "dvc-remote", "uri": f"dvc://{a.dvc_remote}/{digest[:2]}/{digest[2:]}", "verified_at": now},
-    ]
+    pointer["locations"] = [{"kind": "origin", "uri": a.origin_url}]
     if a.dvc_file:
         pointer["dvc_file"] = a.dvc_file
+        # DVC 3 addresses cache objects by MD5 (files/md5/<2>/<30>); read it from the .dvc file written by `dvc add`.
+        dvc_path = Path(a.dvc_file)
+        md5 = None
+        if dvc_path.is_file():
+            for line in dvc_path.read_text(encoding="utf-8").splitlines():
+                if line.strip().startswith("- md5:") or line.strip().startswith("md5:"):
+                    md5 = line.split(":", 1)[1].strip()
+                    break
+        if md5:
+            pointer["dvc_md5"] = md5
+            pointer["locations"].append({"kind": "dvc-remote",
+                                         "uri": f"dvc+{a.dvc_remote}://files/md5/{md5[:2]}/{md5[2:]}",
+                                         "verified_at": now})
     pdir = a.registry_dir / "pointers"
     pdir.mkdir(parents=True, exist_ok=True)
     ppath = pdir / f"{pointer_id}.json"

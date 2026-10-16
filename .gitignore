@@ -7,7 +7,12 @@ machine-profile.json
 tmpclaude-*
 
 # --- data layers never enter git (resolved by hash from tinkuy-qhali-registry) ---
-raw/
+# raw/: bytes are ignored, but the DVC pointer files and manifests that identify them are tracked.
+raw/**
+!raw/**/
+!raw/**/*.dvc
+!raw/**/manifest.json
+!raw/**/manifest.sha256
 standardized/
 harmonized/
 marts/
